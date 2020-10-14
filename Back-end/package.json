@@ -1,0 +1,30 @@
+{
+  "name": "onaux-backend",
+  "version": "1.0.0",
+  "description": "Backend for on onaux",
+  "main": "app.js",
+  "scripts": {
+    "start": "env-cmd -f ./.env node src/server.js",
+    "dev": "env-cmd -f ./.env nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alimz758/UCLA-CS-130---SWE---OnAux.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alimz758/UCLA-CS-130---SWE---OnAux/issues"
+  },
+  "homepage": "https://github.com/alimz758/UCLA-CS-130---SWE---OnAux#readme",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "env-cmd": "^10.1.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "mongoose": "^5.10.9",
+    "nodemon": "^2.0.5",
+    "sha256": "^0.2.0"
+  }
+}
