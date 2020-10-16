@@ -3,12 +3,13 @@
 App to create sessions for playing music and requesting songs.
 
 1. [Setup](#setup)
+2. [Documentation](#documentation)
 
 # Setup
 
 1. [.env Setup](#env-setup)
 2. [Local Environment Setup](#local-environment-setup)
-2. [Postman Setup](#postman-etup)
+3. [Postman Setup](#postman-setup)
 
 ---
 
@@ -67,8 +68,6 @@ Follow the steps bellow to set up an environment for Postman to call the APIs
    a. Define a variable `url` and set its Initial Value to `localhost:8000`
    b. Define a variable `token` and leave its Initial Value empty for now as when we call the Sign-up API the token will be set automatically
 
-
-
 **Creating a Postman Request**
 
 We first create the Sign-up API request. Follow the steps below:
@@ -79,8 +78,8 @@ We first create the Sign-up API request. Follow the steps below:
 ```
 {
     "username" : "newuser1234",
-    "email": "ali-mz@g.ucla.edu",
-    "password" : "password"
+    "email": "newuser@g.ucla.edu",
+    "password" : "mypassword"
 }
 ```
 
@@ -96,6 +95,7 @@ if (pm.response.code === 201) {
 4. For all other requests that you wish to make, make sure under `Authorization` tab to set `Type` as `inherit auth from parent`
 
 ---
+## Documentation
 
 ## Models & API Endpoints Documentation
 
