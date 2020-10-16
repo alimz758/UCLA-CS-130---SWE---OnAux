@@ -96,3 +96,41 @@ if (pm.response.code === 201) {
 4. For all other requests that you wish to make, make sure under `Authorization` tab to set `Type` as `inherit auth from parent`
 
 ---
+
+## Models & API Endpoints Documentation
+
+Models:
+
+1. [User Perfomer Model](#user-performer-model)
+2. [Media](#media-model)
+3. [Comments](#comments-model)
+4. Other models are under dev
+
+---
+
+### User Performer Model
+
+### Schema
+
+| Field          | Type    | Required | Properties                                                   |
+| -------------- | ------- | -------- | ------------------------------------------------------------ |
+| username       | String  | Yes      |                                                              |
+| email          | String  | Yes      |                                                              |
+| password       | String  | Yes      |                                                              |
+| profilePic     | Buffer  |          |                                                              |
+| createdAt      | Date    |          |                                                              |
+| tokens         | Array   |          |                                                              |
+| isDJ           | Boolean |          |                                                              |
+
+### API Endpoints
+
+| url                         | HTTP Method | Required Fields                                                    |
+| --------------------------- | ----------- | ------------------------------------------------------------------ |
+| /user/login                 | POST        | `email`, `password`                                                |
+| /user/signup                | POST        | `username` , `email`, `password`                                   |
+| /user/logout                | POST        | NONE                                                               |
+| /user/profile-pic           | POST        | key: `profile-pic`  , type: `.jpg`, `.png` or `.jpeg`              |
+| /user/profile-pic           | GET         | None                                                               |
+| /user/profile-pic           | DELETE      | None                                                               |
+
+---

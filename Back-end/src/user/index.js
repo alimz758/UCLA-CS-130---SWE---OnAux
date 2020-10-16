@@ -3,7 +3,7 @@ const router = new express.Router();
 const sha256 = require("sha256");
 const db = require("./controller.js");
 const User = require("./user").User
-//middleware for auth
+const sharp = require("sharp")
 const checkAuth = require("../middleware/jwt_authenticator.js");
 
 
@@ -63,5 +63,50 @@ router.post("/user/logout", checkAuth, async (req,res)=>{
         res.status(500).send({error:e})
     }
 });
+
+//================= Upload Profile Picture ==============
+router.post("/user/profile-pic", checkAuth, db.profilePicUpload.single('profile-pic'),async(req,res)=>{
+    
+    const buffer = await sharp(req.file.buffer).png().toBuffer()
+    req.user.profilePic = buffer
+    await req.user.save()
+    res.send()
+    }, 
+
+    (error,req,res,next)=>{
+        res.status(400).send({error: error.message})
+})
+
+//================= Get Profile Picture ==============
+router.get("/user/profile-pic", checkAuth, async(req,res)=>{
+
+    try{
+        const user= req.user
+        if(!user.profilePic){
+            throw new Error("There is no profile picture")
+        }
+
+        res.set('Content-Type','image/png')
+        res.send(user.profilePic)
+    }
+
+    catch (e){
+        res.status(404).send({error:e})
+    }
+})
+
+//================= Delete Profile Picture ==============
+router.delete("/user/profile-pic", checkAuth, async(req,res)=>{
+
+    try{
+        req.user.profilePic = undefined
+        await req.user.save()
+        res.send()
+    }
+    
+    catch(e){
+        res.status(500).send({error:e})
+    }
+})
 
 module.exports = router;
