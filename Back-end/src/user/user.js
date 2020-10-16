@@ -3,19 +3,18 @@ const jwt = require("jsonwebtoken");
 
 const userSchema = mongoose.Schema({
 
-    email: {type: String, required:true, unique:true},
-    username: { type: String, index: true },
-    password: {type:String, required:true},
+    email:      { type: String, required:true, unique:true },
+    username:   { type: String, index: true },
+    password:   { type: String, required:true },
     profilePic: { type: Buffer},
-    createdAt: { type: Date, default: new Date() },
-    role: {type: String},
+    createdAt:  { type: Date, default: new Date()},
+    isDJ :      { type: Boolean },
     tokens:[{
         token:{
             type: String,
             required: true
         }
     }],
-    isDJ : {type: Boolean},
 })
 
 //user method to generate a token

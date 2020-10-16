@@ -1,6 +1,7 @@
 const User = require("./user").User;
 const mongoose = require("mongoose");
 const sha256 = require("sha256");
+const multer = require("multer");
 
 /*
     Set the user Info
@@ -69,8 +70,26 @@ const login = (email, password, callback) => {
     )
 }
 
+//middleware for uploading files
+const profilePicUpload = multer({
+
+    limits:{
+        //2Mb Max Size is allowed
+        fileSize: 2000000
+    },
+    //filter the extensions that are allowed
+    fileFilter(req,file,callback){
+        //accept jpg,png, jpeg
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+            return callback(new Error("File must be an image with '.jpg', '.png' or '.jpeg' extension"))
+        }
+
+        callback(undefined,true) 
+    }
+})
 module.exports ={
     signup,
     isValidAccount,
-    login
+    login,
+    profilePicUpload
 }
