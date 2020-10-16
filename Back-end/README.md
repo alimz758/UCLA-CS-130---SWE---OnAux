@@ -35,17 +35,12 @@ App to create sessions for playing music and requesting songs.
 ---
 ## .env Setup
 
-Create a .env file in the `Back-end` directory and add the followings
+In `Back-end` directory run `npm run-script build`. This command generate the `.env` file and copies(overwrites) the desired environment variables from
 
-```
+`env_variable` to `.env`.
 
-MODE = "DEV" // or as you wish
-PORT = "8000" // or as you wish
-MONGODB_URL = 'mongodb://127.0.0.1:27017/<NAME-OF-DB>'
-DOMAIN_NAME  = localhost: 
-JWT_SECRET_KEY = '<ANY-MADEUP-LONG-SEQUNCE-OF-CHARACTERS>'
+Note: If you created new envirnoment varibles, don't forget to add it to `env_variable` so your teamates can use them as well.
 
-```
 
 ---
 
