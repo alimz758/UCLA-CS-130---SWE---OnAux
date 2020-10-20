@@ -81,7 +81,7 @@ router.post("/user/profile-pic", checkAuth, db.profilePicUpload.single('profile-
 router.get("/user/profile-pic", checkAuth, async(req,res)=>{
 
     try{
-        const user= req.user
+        const user = req.user
         if(!user.profilePic){
             throw new Error("There is no profile picture")
         }
@@ -108,5 +108,6 @@ router.delete("/user/profile-pic", checkAuth, async(req,res)=>{
         res.status(500).send({error:e})
     }
 })
+
 
 module.exports = router;

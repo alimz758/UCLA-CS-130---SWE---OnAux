@@ -1,20 +1,34 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const Session = require("../session/session").Session;
 
 const userSchema = mongoose.Schema({
 
-    email:      { type: String, required:true, unique:true },
+    email:      { type: String, required: true, unique: true },
     username:   { type: String, index: true },
     password:   { type: String, required:true },
     profilePic: { type: Buffer},
     createdAt:  { type: Date, default: new Date()},
-    isDJ :      { type: Boolean },
+    djSessionID : { type: String},
     tokens:[{
         token:{
             type: String,
             required: true
         }
     }],
+    likedSongs:[{
+        song:{
+            type: String,
+            ref: 'Song'
+        }
+    }],
+})
+
+//relation with Session
+userSchema.virtual('session',{
+    ref: 'Session',
+    localField:'_id', 
+    foreignField:'owner' 
 })
 
 //user method to generate a token
