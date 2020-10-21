@@ -64,6 +64,21 @@ router.post("/user/logout", checkAuth, async (req,res)=>{
     }
 });
 
+//================= Get User by ID ==============
+router.get("/users/user-id=:id", checkAuth, async(req,res)=>{
+    try{
+        
+        const user = await UserPerformer.findById({_id:req.params.id})
+        if(!user){
+            return res.status(404).send()
+        }
+        res.send({userInfo:user})
+    }
+    catch(e){
+        res.status(500).send({error:e})
+    }
+})
+
 //================= Upload Profile Picture ==============
 router.post("/user/profile-pic", checkAuth, db.profilePicUpload.single('profile-pic'),async(req,res)=>{
     
