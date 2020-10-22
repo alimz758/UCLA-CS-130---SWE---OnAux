@@ -4,10 +4,6 @@ App to create sessions for playing music and requesting songs.
 
 # Local Environment Setup
 
-1. [Mac Installation/Setup](#Mac Installation/Setup)
-2. [Windows Installation/Setup](#Windows Installation/Setup)
-3. [Linux Installation/Setup](#Linux Installation/Setup)
-
 ---
 
 ## Mac Installation/Setup
