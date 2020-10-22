@@ -46,7 +46,6 @@ router.get("/session/all", checkAuth, async(req,res) => {
         res.send(allSessionIDs)
     }
     catch(e){
-        console.log(e)
         res.status(500).send({error:e})
     }
 })

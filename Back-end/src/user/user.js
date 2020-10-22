@@ -3,9 +3,11 @@ const jwt = require("jsonwebtoken");
 const Session = require("../session/session").Session;
 
 const userSchema = mongoose.Schema({
-
+    
+    firstName:   { type: String },
+    lastName:   { type: String },
     email:      { type: String, required: true, unique: true },
-    username:   { type: String, index: true },
+    username:   { type: String, required: true, unique: true , index: true},
     password:   { type: String, required:true },
     profilePic: { type: Buffer},
     createdAt:  { type: Date, default: new Date()},

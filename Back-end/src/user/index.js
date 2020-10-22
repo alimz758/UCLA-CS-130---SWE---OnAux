@@ -20,7 +20,6 @@ router.post("/user/signup", async(req,res)=>{
     }
 
     catch(e){
-        console.log(e)
         res.status(409).send({ error: e });
     }
 })
@@ -33,7 +32,7 @@ router.post("/user/login", async(req, res) => {
         req.body.password = sha256(req.body.password)
     }
 
-    db.login(req.body.email, req.body.password, async (error,user)=>{
+    db.login(req.body.username, req.body.password, async (error,user)=>{
 
         if(error){
 

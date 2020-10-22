@@ -12,7 +12,6 @@ const signup = async (userInfo) => {
 
         userInfo.password = sha256(userInfo.password)
         userInfo.email= userInfo.email.toLowerCase()
-        userInfo.username = userInfo.username
 
         try {
 
@@ -46,11 +45,11 @@ const isValidAccount = (email, password) => {
 }
 
 //Login helper
-const login = (email, password, callback) => {
+const login = (username, password, callback) => {
 
     User.findOne({
         
-            email: email.toLowerCase(),
+            username: username,
             password: password
         },
 
