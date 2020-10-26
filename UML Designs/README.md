@@ -2,8 +2,8 @@
 
 ### Class Diagram and Psuedo-API
 
-![](Class Diagram.PNG)
+![](Class_Diagram.PNG)
 
 ### User Diagram
 
-![](User Diagram.PNG)
+![](User_Diagram.PNG)
