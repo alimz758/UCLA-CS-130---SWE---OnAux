@@ -12,13 +12,13 @@ const sessionSchema = mongoose.Schema({
     nextSong:   { type: String },    // might store ID depending on Spotify API
     sessionPic: { type: Buffer},
     createdAt:  { type: Date, default: new Date()},
-    histroy:[{
+    history:[{
         song:{
             type: String,
             ref: 'Song'
         }
     }],
-    requstedSongs:[{
+    requestedSongs:[{
         song:{
             type: String,
             ref: 'Song'
