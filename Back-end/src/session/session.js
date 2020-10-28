@@ -18,12 +18,11 @@ const sessionSchema = mongoose.Schema({
             ref: 'Song'
         }
     }],
-    requestedSongs:[{
-        song:{
-            type: String,
-            ref: 'Song'
-        }
-    }],
+    requestedSongs:{
+        type: Map,
+        of: Number,
+        default: {}
+    }
 })
 
 

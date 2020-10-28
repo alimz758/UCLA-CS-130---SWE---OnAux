@@ -128,7 +128,7 @@ Models:
 | /user/login                 | POST        | `username`, `password`                                             |                                      |
 | /user/signup                | POST        | `username` , `email`, `password`, `firstName`, `lastName`          | Returns userInfo + JWT Token         |
 | /user/logout                | POST        | None                                                               |                                      | 
-| /users/user-id=`userID`     | GET         | Passing `userID` as a parameter                                    | Returns userInfo with that `userID`  | 
+| /user/user-id=`userID`     | GET         | Passing `userID` as a parameter                                    | Returns userInfo with that `userID`  | 
 | /user/profile-pic           | POST        | key: `profile-pic`  , type: `.jpg`, `.png` or `.jpeg`              |                                      |
 | /user/profile-pic           | GET         | None                                                               |                                      |
 | /user/profile-pic           | DELETE      | None                                                               |                                      |

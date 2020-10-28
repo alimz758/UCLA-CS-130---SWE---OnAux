@@ -10,7 +10,8 @@ const createSession = async (userInfo, sessionBody) => {
             const sessionInfo = {
                 ownerName: userInfo.name,
                 sessionName : sessionBody.sessionName,
-                owner: userInfo._id
+                owner: userInfo._id, 
+                requestedSongs: new Map()
             }
             const newSession = await Session.create(sessionInfo)
             userInfo.djSessionID = newSession._id

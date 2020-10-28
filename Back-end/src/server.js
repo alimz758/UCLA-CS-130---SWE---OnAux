@@ -2,8 +2,9 @@ require("../src/db/mongoose");
 const app = require("./app");
 const chalk = require("chalk");
 require("dotenv").config({ override: true });
-
 const port = process.env.PORT || 3000 ;
+
+
 
 console.log(
   chalk.green("[INIT]:") + " Service is in " +
