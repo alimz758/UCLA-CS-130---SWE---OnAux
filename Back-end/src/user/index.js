@@ -123,5 +123,26 @@ router.delete("/user/profile-pic", checkAuth, async(req,res)=>{
     }
 })
 
+//================= Add Song to Liked List ==============
+router.post("/user/add-song=:songuri", checkAuth, async(req,res) => {
+    try{
+        const userInfo = req.user
+        var songuri = req.params.songuri.toString()
+        console.log(songuri)
+        if(!userInfo){
+            return res.status(404).send("Bad Query")
+        } else if (songuri === "") {
+            return res.status(400).send("No songuri specified")
+        }
+        if (!userInfo.likedSongs.includes(songuri)) {
+            userInfo.likedSongs.push(songuri)
+        }
+        await userInfo.save()
+        res.send(userInfo)
+    }
+    catch(e){
+        res.status(500).send({error:e})
+    }
+})
 
 module.exports = router;
