@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const sessionSchema = mongoose.Schema({
-
     sessionName:  { type: String, required: true},
     owner : {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +23,6 @@ const sessionSchema = mongoose.Schema({
         default: {}
     }
 })
-
-
 const Session = mongoose.model("Session", sessionSchema);
+
 module.exports = {Session};

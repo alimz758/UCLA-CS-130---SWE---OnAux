@@ -1,12 +1,8 @@
 const Session = require("./session").Session;
 
-
 const createSession = async (userInfo, sessionBody) => {
-
     return new Promise (async (resolve, reject) => {
-
         try {
-            
             const sessionInfo = {
                 ownerName: userInfo.name,
                 sessionName : sessionBody.sessionName,
@@ -18,7 +14,6 @@ const createSession = async (userInfo, sessionBody) => {
             await userInfo.save()
             resolve(newSession)
         }
-
         catch (e) {
             userInfo.djSessionID = undefined
             reject(e)

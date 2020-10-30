@@ -3,7 +3,7 @@ const Session = require("./session").Session;
 const express = require("express");
 const app = express()
 const router = new express.Router();
-const db = require("./controller.js");
+const SessionDB = require("./controller.js");
 const { Socket } = require("dgram");
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -21,7 +21,7 @@ router.post("/session/create", checkAuth, async(req,res) => {
 
     try{
     
-        const newSessionInfo = await db.createSession(req.user, req.body)
+        const newSessionInfo = await SessionDB.createSession(req.user, req.body)
         const userAsDJWithSessionID = req.user
         res.status(201).send({userAsDJWithSessionID, newSessionInfo}) 
     }

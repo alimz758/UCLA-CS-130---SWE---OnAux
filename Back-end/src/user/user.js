@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const Session = require("../session/session").Session;
 
 const userSchema = mongoose.Schema({
-    
     firstName:   { type: String },
     lastName:   { type: String },
     email:      { type: String, required: true, unique: true },
@@ -25,6 +24,7 @@ const userSchema = mongoose.Schema({
         }
     }],
 })
+const User = mongoose.model("User", userSchema);
 
 //relation with Session
 userSchema.virtual('session',{
@@ -54,5 +54,4 @@ userSchema.methods.toJSON = function(){
     return userObject
 }
 
-const User = mongoose.model("User", userSchema);
 module.exports = {User};

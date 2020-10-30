@@ -7,18 +7,13 @@ const multer = require("multer");
     Then set the DB
 */
 const signup = async (userInfo) => {
-
     return new Promise (async (resolve, reject) => {
-
         userInfo.password = sha256(userInfo.password)
         userInfo.email= userInfo.email.toLowerCase()
-
         try {
-
             const newUser = await User.create(userInfo)
             resolve(newUser)
         }
-
         catch (e) {
             User.deleteOne({ email: userInfo.email }, () => {
                 reject(e);
@@ -29,13 +24,9 @@ const signup = async (userInfo) => {
 
 //Validating the user info before signup, update
 const isValidAccount = (email, password) => {
-
     return new Promise(async (resolve, reject) => {
-
         const user = await User.findOne({email:email.toLowerCase().trim()})
-
         if (user) {
-
             return reject("An account already exists with this email!");
         }
         else {
@@ -46,13 +37,10 @@ const isValidAccount = (email, password) => {
 
 //Login helper
 const login = (username, password, callback) => {
-
     User.findOne({
-        
             username: username,
             password: password
         },
-
         (err, result) => {
             if (err) {
               callback(err, null);
@@ -69,7 +57,6 @@ const login = (username, password, callback) => {
 
 //middleware for uploading files
 const profilePicUpload = multer({
-
     limits:{
         //2Mb Max Size is allowed
         fileSize: 2000000
@@ -80,7 +67,6 @@ const profilePicUpload = multer({
         if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
             return callback(new Error("File must be an image with '.jpg', '.png' or '.jpeg' extension"))
         }
-
         callback(undefined,true) 
     }
 })
