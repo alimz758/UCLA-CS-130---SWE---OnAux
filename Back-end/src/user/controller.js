@@ -1,6 +1,7 @@
 const User = require("./user").User;
 const sha256 = require("sha256");
 const multer = require("multer");
+const Song = require("../song/song").Song;
 
 /*
     Set the user Info
@@ -62,7 +63,7 @@ const profilePicUpload = multer({
         fileSize: 2000000
     },
     //filter the extensions that are allowed
-    fileFilter(req,file,callback){
+    fileFilter(req, file, callback){
         //accept jpg,png, jpeg
         if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
             return callback(new Error("File must be an image with '.jpg', '.png' or '.jpeg' extension"))
@@ -71,10 +72,29 @@ const profilePicUpload = multer({
     }
 })
 
+//returns true when song already in users liked list
+const duplicateSong = (userInfo, songInfo) => {
+    const songuri = songInfo['songuri'];
+    const songList = userInfo.likedSongs;
+    for (s of songList) {
+        const songMongoID = s['_id'];
+        Song.findById(songMongoID, 'songuri', (err, songObj) => {
+            if (err || songObj === null) {}
+            else {
+                if (songObj['songuri'] === songuri) {
+                    return true;
+                }
+            }
+        });
+    }
+    return false;
+}
+
 
 module.exports ={
     signup,
     isValidAccount,
     login,
-    profilePicUpload
+    profilePicUpload,
+    duplicateSong
 }

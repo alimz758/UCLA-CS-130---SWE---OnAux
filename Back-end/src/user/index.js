@@ -5,6 +5,8 @@ const UserDB = require("./controller.js");
 const SongDB = require("../song/controller.js");
 const sharp = require("sharp");
 const checkAuth = require("../middleware/jwt_authenticator.js");
+const { checkSongDuplicate } = require("./controller.js");
+const user = require("./user.js");
 
 
 //================= SIGN UP ==============
@@ -114,12 +116,12 @@ router.post("/user/add-song", checkAuth, async(req,res) => {
         } else if (songInfo.songuri === "" || songInfo.songName === "" || songInfo.artist == "") {
             return res.status(400).send("Incomplete song information");
         }
-        if (!userInfo.likedSongs.includes(songInfo)) {
+        if (!UserDB.duplicateSong(userInfo, songInfo)) {
             const newSong = await SongDB.createSong(songInfo);
             userInfo.likedSongs.push(newSong);
             await req.user.save();
         }
-        res.send(user.req.likedSongs);
+        res.send(req.user.likedSongs);
     }
     catch(e){
         res.status(500).send({error:e});
