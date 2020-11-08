@@ -7,6 +7,7 @@ const sharp = require("sharp");
 const checkAuth = require("../middleware/jwt_authenticator.js");
 const { checkSongDuplicate } = require("./controller.js");
 const user = require("./user.js");
+const Song = require("../song/song").Song;
 
 
 //================= SIGN UP ==============
@@ -123,6 +124,37 @@ router.post("/user/add-song", checkAuth, async(req,res) => {
             await req.user.save();
         }
         res.send(req.user.likedSongs);
+    }
+    catch(e){
+        res.status(500).send({error:e});
+    }
+})
+
+//================= Get all Songs in Liked List ==============
+router.get("/user/likes", checkAuth, async(req,res) => {
+    try{
+        const userInfo = req.user;
+        if(!userInfo){
+            return res.status(404).send("Bad User!");
+        } 
+        let likesInfo = [];
+        const songIds = userInfo.likedSongs;
+        for (s of songIds) {
+            const songMongoID = s['_id'];
+            Song.findById(songMongoID, (err, songObj) => {
+                if (err || songObj === null) {}
+                else {
+                    const entry = {
+                        songuri: songObj['songuri'],
+                        songName: songObj['songName'],
+                        artist: songObj['artist'],
+                        album: songObj['album'],
+                    };
+                    likesInfo.push(entry);
+                }
+            });
+        }
+        res.send(likesInfo);
     }
     catch(e){
         res.status(500).send({error:e});
