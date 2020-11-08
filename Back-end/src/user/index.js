@@ -116,7 +116,8 @@ router.post("/user/add-song", checkAuth, async(req,res) => {
         } else if (songInfo.songuri === "" || songInfo.songName === "" || songInfo.artist == "") {
             return res.status(400).send("Incomplete song information");
         }
-        if (!UserDB.duplicateSong(userInfo, songInfo)) {
+        const duplicate = await UserDB.duplicateSong(userInfo, songInfo);
+        if (!duplicate) {
             const newSong = await SongDB.createSong(songInfo);
             userInfo.likedSongs.push(newSong);
             await req.user.save();

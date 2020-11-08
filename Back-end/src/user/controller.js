@@ -74,20 +74,22 @@ const profilePicUpload = multer({
 
 //returns true when song already in users liked list
 const duplicateSong = (userInfo, songInfo) => {
-    const songuri = songInfo['songuri'];
-    const songList = userInfo.likedSongs;
-    for (s of songList) {
-        const songMongoID = s['_id'];
-        Song.findById(songMongoID, 'songuri', (err, songObj) => {
-            if (err || songObj === null) {}
-            else {
-                if (songObj['songuri'] === songuri) {
-                    return true;
+    return new Promise(async (resolve, reject) => {
+        const songuri = songInfo['songuri'];
+        const songList = userInfo.likedSongs;
+        for (s of songList) {
+            const songMongoID = s['_id'];
+            Song.findById(songMongoID, 'songuri', (err, songObj) => {
+                if (err || songObj === null) {}
+                else {
+                    if (songObj['songuri'] === songuri) {
+                        resolve(true);
+                    }
                 }
-            }
-        });
-    }
-    return false;
+            });
+        }
+        resolve(false);
+    })
 }
 
 
