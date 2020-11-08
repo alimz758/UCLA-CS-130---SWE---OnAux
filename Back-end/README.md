@@ -132,7 +132,7 @@ Models:
 | /user/profile-pic           | POST        | key: `profile-pic`  , type: `.jpg`, `.png` or `.jpeg`              |                                      |
 | /user/profile-pic           | GET         | None                                                               |                                      |
 | /user/profile-pic           | DELETE      | None                                                               |                                      |
-| /user/add-song              | POST        | 'songInfo object' with 'songuri', 'songName', 'artist', 'album'    | Returns user likes mongo IDs         |
+| /user/add-song              | POST        | `songInfo object` with `songuri`, `songName`, `artist`, `album`    | Returns user likes mongo IDs         |
 | /user/likes                 | GET         | None                                                               | Returns array of songs + information |
 
 ---
