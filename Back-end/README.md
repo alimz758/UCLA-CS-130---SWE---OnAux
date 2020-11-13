@@ -152,7 +152,7 @@ Models:
 | nextSong       | String  |          |                                                              |
 | createdAt      | Date    |          |                                                              |
 | histroy        | Array   |          |                                                              |
-| requstedSongs  | Array   |          |                                                              |
+| requstedSongs  | HashMap   |          |                                                              |
 | sessionPic     | Buffer  |          |                                                              |
 
 
