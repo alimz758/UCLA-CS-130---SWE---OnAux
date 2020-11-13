@@ -6,7 +6,7 @@ const SongDB = require("../song/controller.js");
 const sharp = require("sharp");
 const checkAuth = require("../middleware/jwt_authenticator.js");
 const { checkSongDuplicate } = require("./controller.js");
-const user = require("./user.js");
+const User = require("./user.js").User;
 const Song = require("../song/song").Song;
 
 
@@ -14,13 +14,13 @@ const Song = require("../song/song").Song;
 router.post("/user/signup", async(req,res)=>{
     try{
         if( await UserDB.isValidAccount(req.body.email, req.body.password, req.body.username)){
-
             const user = await UserDB.signup(req.body)
             const token = await user.generateAuthToken()
             res.status(201).send({user, token}) 
         } 
     }
     catch(e){
+        console.log(e)
         res.status(409).send({ error: e });
     }
 })
@@ -56,9 +56,10 @@ router.post("/user/logout", checkAuth, async (req,res)=>{
 });
 
 //================= Get User by ID ==============
-router.get("/users/user-id=:id", checkAuth, async(req,res)=>{
+router.get("/user/user-id=:id", checkAuth, async(req,res)=>{
     try{
-        const user = await UserPerformer.findById({_id:req.params.id})
+        const user = await User.findById({_id:req.params.id})
+        console.log(user)
         if(!user){
             return res.status(404).send()
         }

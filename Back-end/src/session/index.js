@@ -76,18 +76,18 @@ router.get("/session/all", checkAuth, async(req,res) => {
 // })
 
 
-//================= Request Song Mock ==============
-router.post("/session-id=:id/request-song=:songuri", checkAuth, async(req,res) => {
-
+//================= Request Song, or UpVote/DownVote ==============
+router.post("/session/session-id=:id/request-song=:songuri", checkAuth, async(req,res) => {
+    //TODO: MAKE IT REAL TIME
+    let sessionInfo = undefined
     try{
-        const sessionInfo = await Session.findById({ _id: req.params.id})
-        if(!sessionInfo){
-            return res.status(404).send()
-        }
+        sessionInfo = await Session.findById({ _id: req.params.id})
+        
         var songuri = req.params.songuri.toString()
         //key should be string
         if (sessionInfo.requestedSongs.get(songuri) !== undefined) {
-            sessionInfo.requestedSongs.set(songuri, sessionInfo.requestedSongs.get(songuri) +1)
+            var vote = parseInt(req.body.vote)
+            sessionInfo.requestedSongs.set(songuri, sessionInfo.requestedSongs.get(songuri) + vote)
         }
         else {
             sessionInfo.requestedSongs.set(songuri, 1)
@@ -96,6 +96,28 @@ router.post("/session-id=:id/request-song=:songuri", checkAuth, async(req,res) =
         res.send(sessionInfo)
     }
     catch(e){
+        if(!sessionInfo){
+            return res.status(404).send({error: "No session found with that sessionID"})
+        }
+        res.status(500).send({error:e})
+    }
+})
+
+//================= Set the current song ==============
+router.post("/session/session-id=:id/set-current-song=:songuri", checkAuth, async(req,res) => {
+    //TODO: MAKE IT REAL TIME
+    let sessionInfo = undefined
+    try{
+        sessionInfo = await Session.findById({ _id: req.params.id})
+        var songuri = req.params.songuri.toString()
+        sessionInfo.currentSongURI = songuri
+        await sessionInfo.save()
+        res.send(sessionInfo)
+    }
+    catch(e){
+        if(!sessionInfo){
+            return res.status(404).send({error: "No session found with that sessionID"})
+        }
         res.status(500).send({error:e})
     }
 })
