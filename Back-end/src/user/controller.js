@@ -79,7 +79,7 @@ const duplicateSong = (userInfo, songInfo) => {
         const songList = userInfo.likedSongs;
         for (s of songList) {
             const songMongoID = s['_id'];
-            Song.findById(songMongoID, 'songuri', (err, songObj) => {
+            await Song.findById(songMongoID, 'songuri', (err, songObj) => {
                 if (err || songObj === null) {}
                 else {
                     if (songObj['songuri'] === songuri) {

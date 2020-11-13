@@ -119,12 +119,15 @@ router.post("/user/add-song", checkAuth, async(req,res) => {
             return res.status(400).send("Incomplete song information");
         }
         const duplicate = await UserDB.duplicateSong(userInfo, songInfo);
+        console.log(duplicate);
         if (!duplicate) {
             const newSong = await SongDB.createSong(songInfo);
             userInfo.likedSongs.push(newSong);
             await req.user.save();
+            res.send(req.user.likedSongs);
+        } else {
+            res.send("Song already in User Likes");
         }
-        res.send(req.user.likedSongs);
     }
     catch(e){
         res.status(500).send({error:e});
@@ -142,7 +145,7 @@ router.get("/user/likes", checkAuth, async(req,res) => {
         const songIds = userInfo.likedSongs;
         for (s of songIds) {
             const songMongoID = s['_id'];
-            Song.findById(songMongoID, (err, songObj) => {
+            await Song.findById(songMongoID, (err, songObj) => {
                 if (err || songObj === null) {}
                 else {
                     const entry = {
@@ -156,6 +159,46 @@ router.get("/user/likes", checkAuth, async(req,res) => {
             });
         }
         res.send(likesInfo);
+    }
+    catch(e){
+        res.status(500).send({error:e});
+    }
+})
+
+//================= Get all Songs in Liked List ==============
+//====== NOT COMPLETE
+router.delete("/user/remove-song", checkAuth, async(req,res) => {
+    try{
+        const userInfo = req.user;
+        const songInfo = req.body.songInfo;
+        if(!userInfo){
+            return res.status(404).send("Bad User!");
+        } else if (!songInfo.songuri || songInfo.songuri === "") {
+            return res.status(400).send("Incomplete song uri");
+        }
+
+        const oldLen = userInfo.likedSongs.length;
+        userInfo.likedSongs = userInfo.likedSongs.filter(async function (s) {
+            const songMongoID = s['_id'];
+            await Song.findById(songMongoID, (err, songObj) => {
+                if (err || songObj === null) {}
+                else {
+                    const uri = songObj['songuri'];
+                    if (uri === songInfo.songuri) {
+                        return false;    //remove song
+                    } else {
+                        return true;    //keep song
+                    }
+                }
+            });
+        });
+        const newLen = userInfo.likedSongs.length;
+
+        if (newLen === oldLen) {
+            await req.user.save();
+            res.send(req.user.likedSongs);
+        }
+        res.send(`could not find song with uri ${songInfo.songuri} in user likes`);
     }
     catch(e){
         res.status(500).send({error:e});
