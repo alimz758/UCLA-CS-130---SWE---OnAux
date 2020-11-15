@@ -7,6 +7,11 @@ target 'OnAux' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
+  
+  pod 'RNEventEmitter', :path => "../node_modules/react-native-events"
+  pod 'RNSpotifyRemote', :path => '../node_modules/react-native-spotify-remote'
+
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
   target 'OnAuxTests' do
     inherit! :complete
