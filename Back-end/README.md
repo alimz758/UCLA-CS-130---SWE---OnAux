@@ -134,6 +134,7 @@ Models:
 | /user/profile-pic           | DELETE      | None                                                               |                                      |
 | /user/add-song              | POST        | `songInfo object` with `songuri`, `songName`, `artist`, `album`    | Returns user likes mongo IDs         |
 | /user/likes                 | GET         | None                                                               | Returns array of songs + information |
+| /user/remove-song           | DELETE      | `songInfo object` with `songuri`                                   | Returns array of songs + information |
 
 ---
 
