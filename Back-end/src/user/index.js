@@ -5,9 +5,7 @@ const UserDB = require("./controller.js");
 const SongDB = require("../song/controller.js");
 const sharp = require("sharp");
 const checkAuth = require("../middleware/jwt_authenticator.js");
-const { checkSongDuplicate } = require("./controller.js");
 const User = require("./user.js").User;
-const Song = require("../song/song").Song;
 
 
 //================= SIGN UP ==============
@@ -89,7 +87,7 @@ router.get("/user/profile-pic", checkAuth, async(req,res)=>{
             throw new Error("There is no profile picture")
         }
         res.set('Content-Type','image/png')
-        res.send(user.profilePic)
+        return res.send(user.profilePic)
     }
     catch (e){
         res.status(404).send({error:e})
@@ -101,10 +99,10 @@ router.delete("/user/profile-pic", checkAuth, async(req,res)=>{
     try{
         req.user.profilePic = undefined
         await req.user.save()
-        res.send()
+        return res.send()
     }
     catch(e){
-        res.status(500).send({error:e})
+        return res.status(500).send({error:e})
     }
 })
 
@@ -119,18 +117,16 @@ router.post("/user/add-song", checkAuth, async(req,res) => {
             return res.status(400).send("Incomplete song information");
         }
         const duplicate = await UserDB.duplicateSong(userInfo, songInfo);
-        console.log(duplicate);
         if (!duplicate) {
             const newSong = await SongDB.createSong(songInfo);
             userInfo.likedSongs.push(newSong);
             await req.user.save();
-            res.send(req.user.likedSongs);
-        } else {
-            res.send("Song already in User Likes");
-        }
+        } 
+        const likesJSON = await UserDB.dumpUserLikes(req.user);
+        return res.send(likesJSON);
     }
     catch(e){
-        res.status(500).send({error:e});
+        return res.status(500).send({error:e});
     }
 })
 
@@ -140,37 +136,21 @@ router.get("/user/likes", checkAuth, async(req,res) => {
         const userInfo = req.user;
         if(!userInfo){
             return res.status(404).send("Bad User!");
-        } 
-        let likesInfo = [];
-        const songIds = userInfo.likedSongs;
-        for (s of songIds) {
-            const songMongoID = s['_id'];
-            await Song.findById(songMongoID, (err, songObj) => {
-                if (err || songObj === null) {}
-                else {
-                    const entry = {
-                        songuri: songObj['songuri'],
-                        songName: songObj['songName'],
-                        artist: songObj['artist'],
-                        album: songObj['album'],
-                    };
-                    likesInfo.push(entry);
-                }
-            });
         }
-        res.send(likesInfo);
+        const likesJSON = await UserDB.dumpUserLikes(req.user);
+        return res.send(likesJSON);
     }
     catch(e){
-        res.status(500).send({error:e});
+        return res.status(500).send({error:e});
     }
 })
 
 //================= Get all Songs in Liked List ==============
-//====== NOT COMPLETE
 router.delete("/user/remove-song", checkAuth, async(req,res) => {
     try{
         const userInfo = req.user;
         const songInfo = req.body.songInfo;
+
         if(!userInfo){
             return res.status(404).send("Bad User!");
         } else if (!songInfo.songuri || songInfo.songuri === "") {
@@ -178,30 +158,25 @@ router.delete("/user/remove-song", checkAuth, async(req,res) => {
         }
 
         const oldLen = userInfo.likedSongs.length;
-        userInfo.likedSongs = userInfo.likedSongs.filter(async function (s) {
+        userInfo.likedSongs = await Promise.all(userInfo.likedSongs.map(async function (s) {
             const songMongoID = s['_id'];
-            await Song.findById(songMongoID, (err, songObj) => {
-                if (err || songObj === null) {}
-                else {
-                    const uri = songObj['songuri'];
-                    if (uri === songInfo.songuri) {
-                        return false;    //remove song
-                    } else {
-                        return true;    //keep song
-                    }
-                }
-            });
+            return (await UserDB.sameSong(songMongoID,songInfo.songuri)) ? null : s;
+        }));
+        
+        userInfo.likedSongs = userInfo.likedSongs.filter(item => {
+            return (item === null) ? false : true;
         });
         const newLen = userInfo.likedSongs.length;
 
         if (newLen === oldLen) {
-            await req.user.save();
-            res.send(req.user.likedSongs);
+            return res.send(`could not find song with uri ${songInfo.songuri} in user likes`);
         }
-        res.send(`could not find song with uri ${songInfo.songuri} in user likes`);
+        await req.user.save();
+        const likesJSON = await UserDB.dumpUserLikes(req.user);
+        return res.send(likesJSON);
     }
     catch(e){
-        res.status(500).send({error:e});
+        return res.status(500).send({error:e});
     }
 })
 

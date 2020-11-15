@@ -92,11 +92,53 @@ const duplicateSong = (userInfo, songInfo) => {
     })
 }
 
+//returns if a song object s is the same as a songuri
+const sameSong = (songMongoID, songuri) => {
+    return new Promise(async (resolve, reject) => {
+        await Song.findById(songMongoID, (err, songObj) => {
+            if (err || songObj === null) {}
+            else {
+                const uri = songObj['songuri'];
+                if (uri === songuri) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            }
+        });
+    })
+}
+
+//returns a user's list of liked songs in JSON
+const dumpUserLikes = (userInfo) => {
+    return new Promise(async (resolve, reject) => {
+        let likesInfo = [];
+        const songIds = userInfo.likedSongs;
+        for (s of songIds) {
+            const songMongoID = s['_id'];
+            await Song.findById(songMongoID, (err, songObj) => {
+                if (err || songObj === null) {}
+                else {
+                    const entry = {
+                        songuri: songObj['songuri'],
+                        songName: songObj['songName'],
+                        artist: songObj['artist'],
+                        album: songObj['album'],
+                    };
+                    likesInfo.push(entry);
+                }
+            });
+        }
+        resolve(likesInfo);
+    })
+}
 
 module.exports ={
     signup,
     isValidAccount,
     login,
+    sameSong,
+    dumpUserLikes,
     profilePicUpload,
     duplicateSong
 }
