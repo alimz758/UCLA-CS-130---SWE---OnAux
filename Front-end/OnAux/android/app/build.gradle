@@ -184,6 +184,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    //implementation "com.spotify.android:auth:1.2.3"
+    implementation project(':react-native-spotify-remote')
+    implementation project(':react-native-events')
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
