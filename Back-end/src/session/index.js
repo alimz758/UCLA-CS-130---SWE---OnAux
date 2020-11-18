@@ -122,5 +122,26 @@ router.post("/session/session-id=:id/set-current-song=:songuri", checkAuth, asyn
     }
 })
 
+//================= Get Session History ==============
+router.get("/session/session-id=:id/history", checkAuth, async(req,res) => {
+    //TODO: MAKE IT REAL TIME
+    let sessionInfo = undefined
+    try{
+        sessionInfo = await Session.findById({ _id: req.params.id})
+        if (!sessionInfo) {
+            throw new Error();
+        } else {
+            const hist = SessionDB.dumpHistory(sessionInfo);
+            res.send(hist);
+        }
+    }
+    catch(e){
+        if(!sessionInfo){
+            return res.status(404).send({error: "No session found with that sessionID"})
+        }
+        res.status(500).send({error:e})
+    }
+})
+
 
 module.exports = router;
