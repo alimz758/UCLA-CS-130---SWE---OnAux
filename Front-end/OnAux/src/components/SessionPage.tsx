@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, View, TextInput, Linking } from 'react-native';
+import { decode as atob, encode as btoa } from 'base-64';
 import {
   auth as SpotifyAuth,
   remote as SpotifyRemote,
@@ -39,22 +40,40 @@ const spotifyConfig: ApiConfig = {
 
 function SessionPage(): JSX.Element {
   const [id, setId] = useState("");
+  const [tok, setTok] = useState("");
 
   async function onQueuePress() {
     // search spotify api
     // add song to queue through api
     try {
-      console.log("dog");
-      const session = await SpotifyAuth.authorize(spotifyConfig);
-      //await SpotifyRemote.playUri('');
-      //await SpotifyRemote.connect(session.token);
-      //await SpotifyRemote.queueUri('spotify:track:6IA8E2Q5ttcpbuahIej074');
-      //await SpotifyRemote.seek(58);
+      if(tok === ""){
+        const session = await SpotifyAuth.authorize(spotifyConfig);
+        await SpotifyRemote.connect(session.accessToken);
+        setTok(session.accessToken);
+      }
+      let uri = await getSongFromText(tok);
+      await SpotifyRemote.queueUri(uri);
     } catch(err) {
       console.error("Couldn't authorize/connect w spotify", err);
       console.log("Couldn't authorize/connect w spotify " + err);
     }
   }
+
+  const getSongFromText = async (token) => {
+    try{
+      let resp = await fetch('https://api.spotify.com/v1/search?q='+id+'&type=track&market=US&limit=1', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      });
+      let json = await resp.json();
+      return json.tracks.items[0].uri;
+    } catch (err) {
+      console.log('error encountered requesting songs');
+      console.log(err);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -64,7 +83,7 @@ function SessionPage(): JSX.Element {
           onChangeText={text => setId(text)}
         />
         <Button
-          title='Queue'
+          title='queue'
 	  onPress={onQueuePress}
         />
       </View>
