@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, View, TextInput, Linking } from 'react-native';
-import { decode as atob, encode as btoa } from 'base-64';
 import {
   auth as SpotifyAuth,
   remote as SpotifyRemote,
