@@ -4,6 +4,7 @@ const express = require("express");
 const app = express()
 const router = new express.Router();
 const SessionDB = require("./controller.js");
+const SongDB = require("../song/controller.js");
 const { Socket } = require("dgram");
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
@@ -125,21 +126,50 @@ router.post("/session/session-id=:id/set-current-song=:songuri", checkAuth, asyn
 //================= Get Session History ==============
 router.get("/session/session-id=:id/history", checkAuth, async(req,res) => {
     //TODO: MAKE IT REAL TIME
-    let sessionInfo = undefined
+    let sessionInfo = undefined;
     try{
-        sessionInfo = await Session.findById({ _id: req.params.id})
+        sessionInfo = await Session.findById({ _id: req.params.id});
         if (!sessionInfo) {
             throw new Error();
         } else {
-            const hist = SessionDB.dumpHistory(sessionInfo);
+            const hist = await SessionDB.dumpHistory(sessionInfo);
             res.send(hist);
         }
     }
     catch(e){
         if(!sessionInfo){
-            return res.status(404).send({error: "No session found with that sessionID"})
+            return res.status(404).send({error: "No session found with that sessionID"});
         }
-        res.status(500).send({error:e})
+        res.status(500).send({error:e});
+    }
+})
+
+//================= Add Song to History ==============
+router.post("/session/session-id=:id/history/add-song", checkAuth, async(req,res) => {
+    let sessionInfo = undefined;
+    const songInfo = req.body.songInfo;
+    try{
+        sessionInfo = await Session.findById({ _id: req.params.id});
+        if (!sessionInfo) {
+            throw new Error();
+        } else if (songInfo.songuri === "" || songInfo.songName === "" || songInfo.artist == "") {
+            return res.status(400).send("Incomplete song information");
+        } else {
+            const duplicate = await SessionDB.duplicateHistorySong(sessionInfo, songInfo);
+            if (!duplicate) {
+                const newSong = await SongDB.createSong(songInfo);
+                sessionInfo.history.push(newSong);
+                await sessionInfo.save();
+            } 
+            const hist = await SessionDB.dumpHistory(sessionInfo);
+            res.send(hist);
+        }
+    }
+    catch(e){
+        if(!sessionInfo){
+            return res.status(404).send({error: "No session found with that sessionID"});
+        }
+        res.status(500).send({error:e});
     }
 })
 

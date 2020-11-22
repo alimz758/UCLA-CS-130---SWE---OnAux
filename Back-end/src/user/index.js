@@ -57,7 +57,6 @@ router.post("/user/logout", checkAuth, async (req,res)=>{
 router.get("/user/user-id=:id", checkAuth, async(req,res)=>{
     try{
         const user = await User.findById({_id:req.params.id})
-        console.log(user)
         if(!user){
             return res.status(404).send()
         }

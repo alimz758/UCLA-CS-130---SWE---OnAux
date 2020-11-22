@@ -1,4 +1,5 @@
 const Session = require("./session").Session;
+const Song = require("../song/song").Song;
 
 const createSession = async (userInfo, sessionBody) => {
     return new Promise (async (resolve, reject) => {
@@ -45,7 +46,28 @@ const dumpHistory = (sessionInfo) => {
     })
 }
 
+//returns true when song already in users liked list
+const duplicateHistorySong = (sessionInfo, songInfo) => {
+    return new Promise(async (resolve, reject) => {
+        const songuri = songInfo['songuri'];
+        const songIds = sessionInfo.history;
+        for (s of songIds) {
+            const songMongoID = s['_id'];
+            await Song.findById(songMongoID, 'songuri', (err, songObj) => {
+                if (err || songObj === null) {}
+                else {
+                    if (songObj['songuri'] === songuri) {
+                        resolve(true);
+                    }
+                }
+            });
+        }
+        resolve(false);
+    })
+}
+
 module.exports = {
     createSession,
-    dumpHistory
+    dumpHistory,
+    duplicateHistorySong
 }
