@@ -132,9 +132,9 @@ Models:
 | /user/profile-pic           | POST        | key: `profile-pic`  , type: `.jpg`, `.png` or `.jpeg`              |                                      |
 | /user/profile-pic           | GET         | None                                                               |                                      |
 | /user/profile-pic           | DELETE      | None                                                               |                                      |
-| /user/add-song              | POST        | `songInfo object` with `songuri`, `songName`, `artist`, `album`    | Returns array of songs + information |
+| /user/add-song              | POST        | `songInfo object` with `songuri`, `songName`, `artist`, `album` in body    | Returns array of songs + information |
 | /user/likes                 | GET         | None                                                               | Returns array of songs + information |
-| /user/remove-song           | DELETE      | `songInfo object` with `songuri`                                   | Returns array of songs + information |
+| /user/remove-song           | DELETE      | `songInfo object` with `songuri` in body                           | Returns array of songs + information |
 
 ---
 
@@ -165,4 +165,6 @@ Models:
 | /session/all                      | GET         | None                                 | Returning all available/active sessions with their `sessionName`s and `sessionID`s                        |
 | /session/session-id=`sessionID`/request-song=`songuri`                   | POST         | `sessionID` and `songuri`  as params, and `vote` in body +1/-1                               | returning the updated session in JSON                         |
 | /session/session-id=`sessionID`/set-current-song=`songuri`"                    | POST        | `sessionID` and `songuri`  as params                            | Set the current soong being played                         |
+| /session/session-id=`sessionID`/history"                    | GET        | `sessionID` as param                            | Returns Session History Song details                         |
+| /session/session-id=`sessionID`/history/add-song"                    | POST        | `sessionID` as param, `songInfo object` with `songuri`, `songName`, `artist`, `album` in body                            | Adds song object to history                         |
 ---
