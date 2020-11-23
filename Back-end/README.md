@@ -163,8 +163,6 @@ Models:
 | /session/create                   | POST        | `sessionName`                        | Create a new session to become a DJ, Returns userInfo with sessionID + newly created Session information |
 | /session/session-id=`sessionID`   | GET         | passing `sessionID` as a parameter   | Get all information about a session, has to pass the sessionID as a parameter                            |
 | /session/all                      | GET         | None                                 | Returning all available/active sessions with their `sessionName`s and `sessionID`s                        |
-| /session/session-id=`sessionID`/request-song=`songuri`                   | POST         | `sessionID` and `songuri`  as params, and `vote` in body +1/-1                               | returning the updated session in JSON                         |
-| /session/session-id=`sessionID`/set-current-song=`songuri`"                    | POST        | `sessionID` and `songuri`  as params                            | Set the current soong being played                         |
-| /session/session-id=`sessionID`/history"                    | GET        | `sessionID` as param                            | Returns Session History Song details                         |
-| /session/session-id=`sessionID`/history/add-song"                    | POST        | `sessionID` as param, `songInfo object` with `songuri`, `songName`, `artist`, `album` in body                            | Adds song object to history                         |
+| /session/session-id=`sessionID`/                   | POST         | `sessionID` as a  param, `songInfo` and `vote`(+1/-1) in body                                | returning the updated session in JSON                         |
+| /session/session-id=`sessionID`/set-current-song                    | POST        | `sessionID`, `songInfo` as a body                           | Set the current soong being played                         |
 ---

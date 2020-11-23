@@ -5,8 +5,6 @@ const songSchema = mongoose.Schema({
     songName:    {type: String},
     artist:      {type: String},
     album:       {type: String},
-    upVotes:     {type:Number, default:0},
-    downVotes:   {type:Number, default:0},
 })
 const Song = mongoose.model("Song", songSchema);
 

@@ -7,7 +7,12 @@ const sessionSchema = mongoose.Schema({
         required: true,
         ref: 'User'
     },
-    currentSongURI:   { type: String }, // might store ID depending on Spotify API
+    currentSongInfo: { 
+        songuri : { type: String, required: true},
+        songName : { type: String, required: true},
+        artist : { type: String, required: true},
+        album : { type: String, required: true}
+    }, 
     nextSong:   { type: String },    // might store ID depending on Spotify API
     sessionPic: { type: Buffer},
     createdAt:  { type: Date, default: new Date()},

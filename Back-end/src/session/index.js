@@ -78,13 +78,13 @@ router.get("/session/all", checkAuth, async(req,res) => {
 
 
 //================= Request Song, or UpVote/DownVote ==============
-router.post("/session/session-id=:id/request-song=:songuri", checkAuth, async(req,res) => {
+router.post("/session/session-id=:id/request-song", checkAuth, async(req,res) => {
     //TODO: MAKE IT REAL TIME
     let sessionInfo = undefined
     try{
         sessionInfo = await Session.findById({ _id: req.params.id})
         
-        var songuri = req.params.songuri.toString()
+        var songuri = req.body.songInfo.songuri.toString()
         //key should be string
         if (sessionInfo.requestedSongs.get(songuri) !== undefined) {
             var vote = parseInt(req.body.vote)
@@ -105,17 +105,17 @@ router.post("/session/session-id=:id/request-song=:songuri", checkAuth, async(re
 })
 
 //================= Set the current song ==============
-router.post("/session/session-id=:id/set-current-song=:songuri", checkAuth, async(req,res) => {
+router.post("/session/session-id=:id/set-current-song", checkAuth, async(req,res) => {
     //TODO: MAKE IT REAL TIME
     let sessionInfo = undefined
     try{
         sessionInfo = await Session.findById({ _id: req.params.id})
-        var songuri = req.params.songuri.toString()
-        sessionInfo.currentSongURI = songuri
+        sessionInfo.currentSongInfo = req.body.songInfo
         await sessionInfo.save()
         res.send(sessionInfo)
     }
     catch(e){
+        console.log(e)
         if(!sessionInfo){
             return res.status(404).send({error: "No session found with that sessionID"})
         }
