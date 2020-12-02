@@ -28,6 +28,7 @@ router.post("/session/create", checkAuth, async(req,res) => {
     }
     
     catch(e){
+        console.log(e)
         res.status(500).send({error:e})
     }
 })
@@ -85,21 +86,25 @@ router.post("/session/session-id=:id/request-song", checkAuth, async(req,res) =>
         sessionInfo = await Session.findById({ _id: req.params.id})
         
         var songuri = req.body.songInfo.songuri.toString()
+        var songInfo = req.body.songInfo
+        var newVote
         //key should be string
-        if (sessionInfo.requestedSongs.get(songuri) !== undefined) {
-            var vote = parseInt(req.body.vote)
-            sessionInfo.requestedSongs.set(songuri, sessionInfo.requestedSongs.get(songuri) + vote)
-        }
-        else {
-            sessionInfo.requestedSongs.set(songuri, 1)
-        }
-        await sessionInfo.save()
+        if (sessionInfo.requestedSongsMap.get(songuri) !== undefined) 
+            newVote = sessionInfo.requestedSongsMap.get(songuri) + parseInt(req.body.vote)  
+        
+        else 
+            newVote = 1
+
+        sessionInfo.requestedSongsMap.set(songuri,  newVote)
+        sessionInfo = await SessionDB.createSongInfoWithVote(sessionInfo, songInfo, newVote)
+
         res.send(sessionInfo)
     }
     catch(e){
         if(!sessionInfo){
             return res.status(404).send({error: "No session found with that sessionID"})
         }
+        console.log(e)
         res.status(500).send({error:e})
     }
 })

@@ -66,8 +66,37 @@ const duplicateHistorySong = (sessionInfo, songInfo) => {
     })
 }
 
+
+//not the best solution
+const createSongInfoWithVote = async (session, songInfo, vote) => {
+    return new Promise (async (resolve, reject) => {
+        try {
+            const newSongInfo = {
+                songuri: songInfo.songuri,
+                songName : songInfo.songName,
+                artist: songInfo.artist, 
+                album: songInfo.album,
+                vote: vote
+            }
+            session.requestedSongObj = session.requestedSongObj.filter((requestedSongObj)=>{
+                return requestedSongObj.songuri !== songInfo.songuri
+            })
+            session.requestedSongObj.push(newSongInfo)
+            await session.save()
+            resolve(session)
+        }
+        catch (e) {
+            console.log(e)
+
+            reject(e)
+        }
+    })
+}
+
+
 module.exports = {
     createSession,
     dumpHistory,
-    duplicateHistorySong
+    duplicateHistorySong,
+    createSongInfoWithVote
 }

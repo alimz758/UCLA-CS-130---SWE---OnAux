@@ -22,12 +22,28 @@ const sessionSchema = mongoose.Schema({
             ref: 'Song'
         }
     }],
-    requestedSongs:{
+    requestedSongsMap: {
         type: Map,
         of: Number,
         default: {}
-    }
+    },
+    requestedSongObj: [{
+        songuri: { type: String},
+        songName: { type: String},
+        artist: { type: String},
+        album: { type: String},
+        vote: {type: Number}
+    }]
 })
+
+sessionSchema.methods.toJSON = function(){
+
+    const session = this
+    const sessionObject = session.toObject()
+    delete sessionObject.requestedSongsMap
+    return sessionObject
+}
+
 const Session = mongoose.model("Session", sessionSchema);
 
 module.exports = {Session};
