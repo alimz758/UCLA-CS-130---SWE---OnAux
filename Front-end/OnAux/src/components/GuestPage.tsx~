@@ -1,0 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import {
+  auth as SpotifyAuth,
+  remote as SpotifyRemote,
+  ApiScope,
+  ApiConfig,
+}  from 'react-native-spotify-remote';

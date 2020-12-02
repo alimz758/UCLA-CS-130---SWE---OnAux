@@ -39,19 +39,26 @@ const spotifyConfig: ApiConfig = {
 
 function SessionPage(): JSX.Element {
   const [id, setId] = useState("");
-  const [tok, setTok] = useState("");
+  const [tok, setTok] = useState(null);
 
   async function onQueuePress() {
     // search spotify api
     // add song to queue through api
     try {
-      if(tok === ""){
+      if(tok === null){
         const session = await SpotifyAuth.authorize(spotifyConfig);
         await SpotifyRemote.connect(session.accessToken);
-        setTok(session.accessToken);
+	setTok(session.accessToken);
+	console.log("made it");
+	console.log(tok);
+	console.log(session.accessToken);
+	console.log("checkpoint");
+	let uri = await getSongFromText(session.accessToken);
+	await SpotifyRemote.queueUri(uri);
+      } else {
+        let uri = await getSongFromText(tok);
+        await SpotifyRemote.queueUri(uri);
       }
-      let uri = await getSongFromText(tok);
-      await SpotifyRemote.queueUri(uri);
     } catch(err) {
       console.error("Couldn't authorize/connect w spotify", err);
       console.log("Couldn't authorize/connect w spotify " + err);
@@ -67,6 +74,7 @@ function SessionPage(): JSX.Element {
         },
       });
       let json = await resp.json();
+      console.log(json);
       return json.tracks.items[0].uri;
     } catch (err) {
       console.log('error encountered requesting songs');
@@ -82,7 +90,7 @@ function SessionPage(): JSX.Element {
           onChangeText={text => setId(text)}
         />
         <Button
-          title='queue'
+          title='Queue'
 	  onPress={onQueuePress}
         />
       </View>
