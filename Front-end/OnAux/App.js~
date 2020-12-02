@@ -9,7 +9,6 @@ import LoginPage from './src/components/LoginPage';
 import SessionPage from './src/components/SessionPage';
 import SessionListPage from './src/components/SessionListPage';
 import CreateSessionPage from './src/components/CreateSessionPage';
-import HybridSessionPage from './src/components/HybridSessionPage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -17,14 +16,9 @@ const Tab = createBottomTabNavigator();
 const App: () => ReactNode = () => {
 
     const [cookie, setCookie] = useState("");
-    const [user, setUser] = useState("");
 
     function updateCookie(c) {
 	setCookie(c);
-    }
-
-    function updateUser(u) {
-	setUser(u);
     }
 
     useEffect(() => {
@@ -52,7 +46,7 @@ const App: () => ReactNode = () => {
     }
 
     return (
-      <CookieContext.Provider value={{ cookie, updateCookie, user, updateUser }}>
+      <CookieContext.Provider value={{ cookie, updateCookie }}>
         <NavigationContainer>
           <Tab.Navigator>
             <Tab.Screen
@@ -60,12 +54,16 @@ const App: () => ReactNode = () => {
 	      component={LoginPage}
 	    />
 	    <Tab.Screen
-	      name='Find'
-	      component={HybridSessionPage}
-	    />
-	    <Tab.Screen
 	      name='Host'
 	      component={CreateSessionPage}
+	    />
+	    <Tab.Screen
+	      name='Session'
+	      component={SessionPage}
+	    />
+	    <Tab.Screen
+	      name='SessionList'
+	      component={SessionListPage}
 	    />
 	  </Tab.Navigator>
         </NavigationContainer>

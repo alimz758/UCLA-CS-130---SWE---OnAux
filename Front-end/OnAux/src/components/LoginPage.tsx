@@ -1,34 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Image, StyleSheet, View, TextInput } from 'react-native';
 import LoginButton from './LoginButton';
+import { CookieContext } from '../../cookie-context';
 
 function LoginPage({ navigation }): JSX.Element {
 
   const [uid, setUid] = useState("");
   const [pw, setPw] = useState("");
+  const { cookie, updateCookie } = useContext(CookieContext);
   
   onLoginPress = () => {
     navigation.navigate('Session', { name: 'Session' });
   }
 
   const signUpAction = () => {
-    console.log(JSON.stringify({
-        username: uid,
-	password: pw,
-	email: 'abc@gmail.com',
-      }));
-    return fetch('http://localhost:8000/user/signup', {
+    return fetch('http://13.59.212.151:8000/user/signup', {
       method: 'POST',
+      headers: {
+        //Authorization: 'Bearer ',
+	'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         username: uid,
-	email: 'abc@gmail.com',
+	email: 'ladidadida@gmail.com',
 	password: pw,
-	firstName: 'joe',
-	lastName: 'clegg',
-      })
+	firstName: 'john',
+	lastName: 'doe',
+      }),
     }).then((response) => response.json())
     .then((json) => {
-      console.log(json);
+      updateCookie(json.token);
+      //updateUser(uid);
+      console.log(json.token);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+  const loginAction = () => {
+    return fetch('http://13.59.212.151:8000/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: uid,
+	password: pw,
+      }),
+    }).then((response) => response.json())
+    .then((json) => {
+      updateCookie(json.token);
+      console.log(json.token);
     })
     .catch((error) => {
       console.error(error);
@@ -36,22 +59,26 @@ function LoginPage({ navigation }): JSX.Element {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.form}>
-        <TextInput
-	  style={styles.textInput}
-	  onChangeText={text => setUid(text)}
-	/>
-	<TextInput
-	  style={styles.textInput}
-	  onChangeText={text => setPw(text)}
-	/>
-        <Button
-	  title='Login'
-	  onPress={onLoginPress}
-	/>
+//    <CookieContext.Consumer>
+//    {context => (
+      <View style={styles.container}>
+        <View style={styles.form}>
+          <TextInput
+	    style={styles.textInput}
+	    onChangeText={text => setUid(text)}
+	  />
+	  <TextInput
+	    style={styles.textInput}
+	    onChangeText={text => setPw(text)}
+	  />
+          <Button
+	    title='Login'
+	    onPress={loginAction}
+	  />
+        </View>
       </View>
-    </View>
+//      )}
+//    </CookieContext.Consumer>
   );
 }
 
