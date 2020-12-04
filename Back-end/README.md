@@ -128,16 +128,16 @@ Models:
 
 | API end-point               | HTTP Method | Required Fields                                                    |  Description                         |
 | --------------------------- | ----------- | ------------------------------------------------------------------ | ------------------------------------ |   
-| [Login](#login)                | POST        | `username`, `password`                                             |                                      |
-| [Signup](#signup)                | POST        | `username` , `email`, `password`, `firstName`, `lastName`          | Returns userInfo + JWT Token         |
-| [Logout](#logout)              | POST        | None                                                               |                                      | 
-| [Get-User](#get-user)     | GET         | Passing `userID` as a parameter                                    | Returns userInfo with that `userID`  | 
-| [Upload-Pic](#upload-pic)          | POST        | key: `profile-pic`  , type: `.jpg`, `.png` or `.jpeg`              |                                      |
-| [Get-Profile-Pic](#get-profile-pic)        | GET         | None                                                               |                                      |
-| [Delete-Profile-Pic](#delete-profile-pic)           | DELETE      | None                                                               |                                      |
+| [Login](#login)                | POST        | `username`, `password`                                             |Creates and Returns a JWT Token associated with the user  |
+| [Signup](#signup)                | POST        | `username` , `email`, `password`, `firstName`, `lastName` | Registers a user in Database and returns a JWT Token for authentication      |
+| [Logout](#logout)              | POST        | None                                                               |         Removes the JWT Token from the user association  | 
+| [Get-User](#get-user)     | GET         | Passing `userID` as a parameter                                    | Returns userInfo with given `userID`  | 
+| [Upload-Pic](#upload-pic)          | POST        | key: `profile-pic`  , type: `.jpg`, `.png` or `.jpeg`              |          Uploads picture to user profile         |
+| [Get-Profile-Pic](#get-profile-pic)        | GET         | None                                                               |   Returns user profile picture          |
+| [Delete-Profile-Pic](#delete-profile-pic)           | DELETE      | None                                                       |   Delets user profile picture        |
 | [Add-Song](#add-song)              | POST        | `songInfo object` with `songuri`, `songName`, `artist`, `album` in body    | Returns array of songs + information |
-| [Get-Likes](#get-likes)                | GET         | None                                                               | Returns array of songs + information |
-| [Remove-Song](#remove-song)          | DELETE      | `songInfo object` with `songuri` in body                           | Returns array of songs + information |
+| [Get-Likes](#get-likes)                | GET         | None                                             | Returns array of user's liked songs |
+| [Remove-Song](#remove-song)          | DELETE      | `songInfo object` with `songuri` in body           | Removes the song with `songuri` from user's likes and returns updated array of liked songs |
 
 ---
 
