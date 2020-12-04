@@ -3,7 +3,8 @@
 App to create sessions for playing music and requesting songs.
 
 1. [Setup](#setup)
-2. [Documentation](#documentation)
+2. [API Documentation](#documentation)
+3. [API Unit Testing](#testing)
 
 # Setup
 
