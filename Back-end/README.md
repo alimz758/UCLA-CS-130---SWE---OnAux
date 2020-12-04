@@ -371,8 +371,8 @@ Backend-Response:
 | [Get-All-Session](#get-all-sessions)                     | GET         | None                                 | Returning all available/active sessions with their `sessionName`s and `sessionID`s                        |
 | [Request-Song](#request-song)                  | POST         | `sessionID` as a  param, `songInfo` and `vote`(+1/-1) in body                                | returning the updated session in JSON                         |
 | [Set-Current-Song](#set-current-song)                   | POST        | `sessionID`, `songInfo` as a body                           | Set the current soong being played                         |
-| [Add-Song-History](#add-song-history)                  | POST        | `sessionName`                        | Adding a song to the session history |
-| [Get-Session-History](#get-session-history)                  | GET        | `sessionName`                        | Get the session hostory|
+| [Add-Song-History](#add-song-history)                  | POST        | Song object in the body                    | Adding a song to the session history |
+| [Get-Session-History](#get-session-history)                  | GET        | Song object  in the body                       | Get the session hostory|
 
 
 ---
