@@ -1,11 +1,19 @@
 ## API Documentation
 
+Here are full description of the OnAuc backend API.
+
+
 ## Models & API Endpoints Documentation
 
 Models:
 
 1. [User](#user)
 2. [Session](#session)
+
+
+Testing via Postman:
+
+[Testing](#testing)
 
 ---
 

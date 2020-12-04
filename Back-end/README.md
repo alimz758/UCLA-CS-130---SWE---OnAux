@@ -2,15 +2,13 @@
 
 App to create sessions for playing music and requesting songs.
 
-1. [Setup](#setup)
-2. [API Documentation](#documentation)
-3. [API Unit Testing](#testing)
 
 # Setup
 
-1. [.env Setup](#env-setup)
-2. [Local Environment Setup](#local-environment-setup)
-3. [Postman Setup](#postman-setup)
+1. [Local Environment Setup](#local-environment-setup)
+2. [.env Setup](#env-setup)
+3. [Local Development Setup](#local-development-setup)
+4. [Postman Setup](#postman-setup)
 
 ---
 
@@ -51,7 +49,7 @@ Note: If you created new envirnoment varibles, don't forget to add it to `env_va
 1. Open a terminal in `Back-end`, and run the command `mongod` to start the mongodb daemon - may have to run `sudo mongod` for permission purposes
 2. Open another terminal and run `npm run dev` in the home directory
 3. The local backend development port is set to 8000. You can use Postman for testing APIs
-
+s
 ---
 
 ## Postman Setup
