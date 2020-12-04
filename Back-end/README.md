@@ -663,6 +663,11 @@ Backend-Response:
 
 **API Unit Testing Order**
 1. Call the [Signup](#signup) API and create a user.  Copy the returned token into the value of your `token` environment variable.
-2. Call [Create-Session](#create-session) to create yourself an empty Session.
+2. Call [Create-Session](#create-session) to make yourself a DJ and create an empty Session.  Take the Session ID from the API response.
 3. [Set-Current-Song](#set-current-song) to whatever song you would like.
-4. 
+4. Call [Add-Song-History](#add-song-history) to add a song to the Session history.  Repeat this a few times with different songs.
+5. Check the history of the Session with [Get-Session-History](#get-session-history).
+6. Now from the perspective of a Listener, [Request-Song](#request-song) to the DJ's session.
+7. You really liked a song that the DJ played, so [Add-Song](#add-song) to your likes list.
+8. You check your updated user likes with [Get-Likes](#get-likes).
+9. When you are done, you decide to [Logout](#logout).  Try running another API request [Get-Likes](#get-likes) to show we logged out!
