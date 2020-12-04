@@ -1,6 +1,6 @@
 ## API Documentation
 
-Here are full description of the OnAuc backend API.
+Here is the full description of the OnAux backend API.
 
 
 ## Models & API Endpoints Documentation
