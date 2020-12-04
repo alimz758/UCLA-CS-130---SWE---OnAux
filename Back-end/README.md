@@ -4,7 +4,7 @@ App to create sessions for playing music and requesting songs.
 
 1. [Setup](#setup)
 2. [API Documentation](#documentation)
-3. [API Unit Testing](#API unit testing)
+3. [API Unit Testing](#testing)
 
 # Setup
 
@@ -647,7 +647,7 @@ Backend-Response:
    ]
 ```
 ---
-## API Unit Testing
+## Testing
 ---
 
 **Prerequisites for API Testing**
