@@ -4,7 +4,7 @@ App to create sessions for playing music and requesting songs.
 
 1. [Setup](#setup)
 2. [API Documentation](#documentation)
-3. [API Unit Testing](#testing)
+3. [API Unit Testing](#API unit testing)
 
 # Setup
 
@@ -662,4 +662,7 @@ Backend-Response:
 4. Fill in the API request url, specify the type of API request, and the required API body or params.
 
 **API Unit Testing Order**
-
+1. Call the [Signup](#signup) API and create a user.  Copy the returned token into the value of your `token` environment variable.
+2. Call [Create-Session](#create-session) to create yourself an empty Session.
+3. [Set-Current-Song](#set-current-song) to whatever song you would like.
+4. 
