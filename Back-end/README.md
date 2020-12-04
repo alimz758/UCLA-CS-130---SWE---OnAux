@@ -656,7 +656,7 @@ Backend-Response:
 3. Open Postman app
 
 **Running APIs in postman**
-1. Preceede all API endpoints with `localhost:8000`
+1. Precede all API endpoints with `localhost:8000`
 2. Add an environment variable in the top right called `token`.  You will update this token in API testing, and it is how our backend authenticates API requests.
 3. Click `New Request` in the upper left hand corner.
 4. Fill in the API request url, specify the type of API request, and the required API body or params.
