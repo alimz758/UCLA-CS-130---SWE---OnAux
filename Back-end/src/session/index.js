@@ -41,7 +41,10 @@ router.get("/session/session-id=:id", checkAuth, async(req,res) => {
         if(!sessionInfo){
             return res.status(404).send()
         }
-        res.send(sessionInfo)
+        const hist = await SessionDB.dumpHistory(sessionInfo);
+        let clone = JSON.parse(JSON.stringify(sessionInfo));
+        clone.history = hist;
+        res.send(clone);
     }
     catch(e){
         res.status(500).send({error:e})
