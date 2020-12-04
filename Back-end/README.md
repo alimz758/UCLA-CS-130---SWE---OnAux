@@ -645,3 +645,14 @@ Backend-Response:
       }
    ]
 ```
+---
+## API Unit Testing
+---
+
+** Prerequisites for API Testing **
+1. Open a teminal session to UCLA-CS-130---SWE---OnAux/ root and run `mongod`
+2. Open another teminal session to UCLA-CS-130---SWE---OnAux/Back-end/ directory and run `npm run dev`
+3. Open Postman app
+
+** Running APIs in postman **
+
