@@ -34,7 +34,10 @@ router.post("/user/login", async(req, res) => {
         }
         else{
             const token =  await user.generateAuthToken()
-            res.send({user, token})
+            const likes = await UserDB.dumpUserLikes(user);
+            let clone = JSON.parse(JSON.stringify(user));
+            clone.likedSongs = likes;
+            res.send({clone, token})
         }
      })
 });
@@ -60,7 +63,10 @@ router.get("/user/user-id=:id", checkAuth, async(req,res)=>{
         if(!user){
             return res.status(404).send()
         }
-        res.send({userInfo:user})
+        const likes = await UserDB.dumpUserLikes(user);
+        let clone = JSON.parse(JSON.stringify(user));
+        clone.likedSongs = likes;
+        res.send({userInfo:clone})
     }
     catch(e){
         res.status(500).send({error:e})
