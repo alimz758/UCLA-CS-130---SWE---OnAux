@@ -649,10 +649,16 @@ Backend-Response:
 ## API Unit Testing
 ---
 
-** Prerequisites for API Testing **
+**Prerequisites for API Testing**
 1. Open a teminal session to UCLA-CS-130---SWE---OnAux/ root and run `mongod`
 2. Open another teminal session to UCLA-CS-130---SWE---OnAux/Back-end/ directory and run `npm run dev`
 3. Open Postman app
 
-** Running APIs in postman **
+**Running APIs in postman**
+1. Preceede all API endpoints with `localhost:8000`
+2. Add an environment variable in the top right called `token`.  You will update this token in API testing, and it is how our backend authenticates API requests.
+3. Click `New Request` in the upper left hand corner.
+4. Fill in the API request url, specify the type of API request, and the required API body or params.
+
+**API Unit Testing Order**
 
