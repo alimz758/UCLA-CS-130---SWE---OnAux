@@ -54,7 +54,6 @@ points to the path to your Android SDK.  The SDK is installed by default at
 `%LOCALAPPDATA%\Android\Sdk`
 5. Add platform-tools to your Path variable.  The default installation location
 is `%LOCALAPPDATA%\Android\Sdk\platform-tools`
-
 ---
 
 ## Linux Installation/Setup
@@ -96,6 +95,19 @@ created one before.
 `npx react-native start`
 5. Open another terminal, navigate to ./OnAux and type:
 `npx react-native run-android`
+(Windows)
+6. If receiving error -  "Unable to load script from assets ‘index.android.bundle’"
+   a. Go to your project directory and check if this folder exists 'android/app/src/main/assets'
+      1) If it exists then delete two files viz index.android.bundle and index.android.bundle.meta
+      2) If the folder 'assets' doesn’t exist then create the assets directory there.
+   b. From your root project directory do
+      cd android
+      ./gradlew clean
+   c. Finally, navigate back to the root directory and check
+      1) If there is only one file i.e. index.js then run following command:
+      react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest   android/app/src/main/res
+      2) If there are two files i.e index.android.js and index.ios.js then run:
+react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
 
 ## iOS Emulator (Mac Only)
 
