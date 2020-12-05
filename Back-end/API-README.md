@@ -74,7 +74,14 @@ Backend-Response:
          "firstName": "Ali",
          "lastName": "lastName",
          "email": "ali1d@gmail.com",
-         "likedSongs": [],
+         "likedSongs": [
+               {
+                  "songuri": "984941512",
+                  "songName": "The Adults are Talking",
+                  "artist": "The Strokes",
+                  "album": "Single"
+               }
+         ],
          "__v": 4,
          "djSessionID": "5fbb41b3a4d1c10c041178e0"
       },
@@ -145,7 +152,14 @@ Backend-Response:
          "firstName": "Ali",
          "lastName": "lastName",
          "email": "ali@gmail.com",
-         "likedSongs": [],
+         "likedSongs": [
+               {
+                  "songuri": "984941512",
+                  "songName": "The Adults are Talking",
+                  "artist": "The Strokes",
+                  "album": "Single"
+               }
+         ],
          "__v": 2
       }
    }
@@ -312,7 +326,10 @@ Backend-Response:
          "email": "alie@gmail.com",
          "likedSongs": [
                {
-                  "_id": "5fc96278017ed58034cec095"
+                  "songuri": "984941512",
+                  "songName": "The Adults are Talking",
+                  "artist": "The Strokes",
+                  "album": "Single"
                }
          ],
          "__v": 4,
