@@ -6,8 +6,8 @@
   "scripts": {
     "start": "env-cmd -f ./.env node src/server.js",
     "dev": "env-cmd -f ./.env nodemon src/server.js",
-    "build": "cross-env touch .env && cp -p env_variables .env",
-    "test": "mocha || true "
+     "build": "cross-env touch .env && cp -p env_variables .env",
+      "test": "mocha.js"  
   },
   "repository": {
     "type": "git",
@@ -34,13 +34,11 @@
     "sha256": "^0.2.0",
     "sharp": "^0.26.2",
     "socket.io": "^2.3.0",
-    "supertest": "^6.0.1",
-    "uuid": "^8.3.1",
     "web-push": "^3.4.4"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "cross-env": "^7.0.2",
-    "mocha": "^3.5.3"
+      "cross-env": "^7.0.2",
+      "chai": "^3.5.0",
+      "mocha": "^3.3.0"
   }
 }
