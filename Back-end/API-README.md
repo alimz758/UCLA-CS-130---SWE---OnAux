@@ -463,7 +463,20 @@ Backend-Response:
       "_id": "5fc72a43710d3803f4fff129",
       "sessionName": "Adam's session",
       "owner": "5fc713a0b6dea9fb5c0136f9",
-      "history": [],
+      "history": [
+        {
+            "songuri": "0176789",
+            "songName": "One of these Nights",
+            "artist": "The Eagles",
+            "album": "Single"
+        },
+        {
+            "songuri": "849846161",
+            "songName": "Love Life",
+            "artist": "Ghostland Observatory",
+            "album": "Single"
+        }
+      ],
       "requestedSongObj": [
          {
                "_id": "5fc72a58710d3803f4fff12b",
