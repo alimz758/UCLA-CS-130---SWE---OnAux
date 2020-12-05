@@ -12,8 +12,8 @@ Models:
 
 Testing:
 
-[Testing with Postman](#testing)
-[Unit Testing with Mocha Script](#mocha)
+1. [Testing with Postman](#testing)
+2. [Unit Testing with Mocha Script](#mocha)
 
 ---
 
