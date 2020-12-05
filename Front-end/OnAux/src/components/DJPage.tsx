@@ -6,7 +6,7 @@ import {
   remote as SpotifyRemote,
   ApiScope,
   ApiConfig,
-}  from 'react-native-spotify-remote';
+} from 'react-native-spotify-remote';
 
 const spotifyConfig: ApiConfig = {
   clientID: '98c44c637a3d43aa9a86c92d884c8b3e',
@@ -15,9 +15,11 @@ const spotifyConfig: ApiConfig = {
   tokenSwapURL: 'http://13.59.212.151:3000/swap',
   scopes: [
     ApiScope.AppRemoteControlScope,
+    ApiScope.PlaylistModifyPrivateScope,
+    ApiScope.PlaylistModifyPublicScope,
+    ApiScope.PlaylistReadCollaborativeScope,
+    ApiScope.PlaylistReadPrivateScope,
     ApiScope.StreamingScope,
-    ApiScope.UserLibraryModifyScope,
-    ApiScope.UserLibraryReadScope,
     ApiScope.UserModifyPlaybackStateScope,
     ApiScope.UserReadCurrentlyPlaying,
     ApiScope.UserReadCurrentlyPlayingScope,
@@ -27,117 +29,91 @@ const spotifyConfig: ApiConfig = {
   ],
 }
 
-const DATA = [
-  {
-    title: 'Queue',
-    data: ['Marvins Room', 'Pyramids', 'Dont Think Twice its Alright'],
-  },
-  {
-    title: 'History',
-    data: ['Lost', 'Cameras', 'Draco']
-  },
-];
-
-function GuestPage({ route, navigation }): JSX.Element {
-  const [id, setId] = useState("");
+function DJPage({ route, navigation }): JSX.Element {
+  const [tok, setTok] = useState("");
   const [req, setReq] = useState("");
-  const [tok, setTok] = useState(null);
+  const [id, setId] = useState("Josephs Session");
   const [queue, setQueue] = useState([]);
   const [history, setHistory] = useState([]);
-  const { seshId } = route.params;
+  const [curp, setCurp] = useState(null);
+  const { sesh } = route.params;
   const { cookie, updateCookie } = useContext(CookieContext);
 
-  //console.log(seshId);
+  const Item = ({ song }) => (
+    <View style={styles.itemdiv}>
+      <Text style={styles.votebtn}>{song.vote+' '}</Text>
+      <View style={styles.songArtist}>
+        <View style={styles.item}>
+	  <Text style={styles.entry}>{song.songName}</Text>
+	  <Text style={styles.artist}>{song.artist}</Text>
+	</View>
+      </View>
+    </View>
+  );
 
-  const getSession = async () => {
-    return fetch('http://13.59.212.151:8000/session/session-id='+seshId, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + cookie,
-	'Content-Type': 'application/json',
-      },
-    }).then((response) => response.json())
-    .then((json) => {
-      console.log(json);
-      setHistory(json.history);
-      setQueue(json.requestedSongObj);
-      setId(json.sessionName);
-    }).catch((err) => console.error(err));
+  const authorizeSpotify = async () => {
+    await SpotifyAuth.authorize(spotifyConfig)
+    .then((session) => setTok(session.accessToken))
+    .catch((err) => console.error(err));
   }
 
-  const getSongFromText = async (token) => {
-    try {
-      let resp = await fetch('https://api.spotify.com/v1/search?q='+req+'&type=track&market=US&limit=1', {
-        method: 'GET',
-	headers: {
-	  Authorization: 'Bearer ' + token,
-	},
-      });
-      let json = await resp.json();
-      //console.log(json.tracks.items[0]);
-      let track = json.tracks.items[0];
+  const getSongFromText = async () => {
+    return fetch('https://api.spotify.com/v1/search?q='+req+'&type=track&market=US&limit=1', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + tok,
+	'Content-Type': 'application/json',
+      },
+    }).then((resp) => resp.json())
+    .then((json) => json.tracks.items[0])
+    .then((track) => {
       const song = {
         songuri: track.uri,
 	songName: track.name,
 	artist: track.artists[0].name,
-	album: track.album.name,
+	album: track.album.name
       };
-      return song;
-    } catch(err) { console.error(err) }
+      setCurPlaying(song);
+      setCurp(song);
+      queueSong(track.uri);
+    })
+    .catch((err) => console.error(err));
   }
 
-  const getSongFromApi = async () => {
-    try {
-      if(tok === null){
-        const session = await SpotifyAuth.authorize(spotifyConfig);
-	await SpotifyRemote.connect(session.accessToken);
-	setTok(session.accessToken);
-	//let uri = await getSongFromText(session.accessToken);
-	//await SpotifyRemote.queueUri(uri);
-	let song = await getSongFromText(session.accessToken);
-	return song;
-      } else {
-        
-        let song = await getSongFromText(tok);
-	return song;
-      }
-    } catch(err) { console.error(err) };
-  }
-
-  const requestSong = async () => {
-
-    const song = await getSongFromApi();
-    console.log(song);
-
-    return fetch('http://13.59.212.151:8000/session/session-id='+seshId+'/request-song', {
+  const setCurPlaying = async (songinfo) => {
+    await fetch('https://13.59.212.151:8000/session/session-id='+sesh.newSessionInfo._id+'/set-current-song', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + cookie,
 	'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        songInfo: song,
-	vote: '1',
+        songInfo: songinfo,
       }),
-    }).then((resp) => resp.json())
+    })
+    .then((resp) => resp.json())
     .then((json) => {
-      setHistory(json.history);
-      setQueue(json.requestedSongObj);
-      setId(json.sessionName);
+      console.log(json);
     })
     .catch((err) => console.error(err));
   }
 
-  const Item = ({ song }) => (
-    <View style={styles.item}>
-      <Text style={styles.entry}>{song.songName}</Text>
-      <Text style={styles.artist}>{song.artist}</Text>
-    </View>
-  );
+  const queueSong = async (uri) => {
+    await SpotifyRemote.queueUri(uri);
+  }
 
   useEffect(() => {
-    getSession();
-  }, []);
+    const authSpot = async () => {
+      await authorizeSpotify()
+      .then(() => SpotifyRemote.connect(tok));
+    }
+
+    if(tok == ""){
+      authSpot();
+    } else {  
+      SpotifyRemote.connect(tok);
+    }
+  });
 
   const queueHis = [
     {
@@ -150,32 +126,37 @@ function GuestPage({ route, navigation }): JSX.Element {
     },
   ];
 
+  const pressbtn = () => {
+    console.log('press');
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.form}>
-        <Text style={styles.title}>{id}</Text>
-        <TextInput
+        <Text style={styles.title}>{sesh.newSessionInfo.sessionName}</Text>
+	<TextInput
 	  style={styles.textInput}
 	  onChangeText={text => setReq(text)}
 	/>
 	<Button
 	  title='Request'
-	  onPress={requestSong}
+	  onPress={getSongFromText}
 	/>
 	<SafeAreaView style={styles.container}>
 	  <SectionList
 	    sections={queueHis}
 	    keyExtractor={(item, index) => item + index}
 	    renderItem={({ item }) => <Item song={item} />}
-	    renderSectionHeader={({ section: { title } }) => (
-	      <Text style={styles.heading}>{title}</Text>
-	    )}
+	    renderSectionHeader={
+	      ({ section: { title } }) => (
+	        <Text style={styles.heading}>{title}</Text>
+	      )}
+	    
 	  />
 	</SafeAreaView>
       </View>
     </View>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -219,6 +200,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+  itemdiv: {
+    flexDirection: 'row',
+  },
+  songArtist: {
+    flexDirection: 'column',
+  },
+  votebtn: {
+    fontSize: 16,
+  },
 });
 
-export default GuestPage;
+export default DJPage;

@@ -10,6 +10,7 @@ import SessionPage from './src/components/SessionPage';
 import SessionListPage from './src/components/SessionListPage';
 import CreateSessionPage from './src/components/CreateSessionPage';
 import HybridSessionPage from './src/components/HybridSessionPage';
+import HybridDJPage from './src/components/HybridDJPage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -63,10 +64,12 @@ const App: () => ReactNode = () => {
 	      name='Find'
 	      component={HybridSessionPage}
 	    />
+
 	    <Tab.Screen
 	      name='Host'
-	      component={CreateSessionPage}
+	      component={HybridDJPage}
 	    />
+
 	  </Tab.Navigator>
         </NavigationContainer>
       </CookieContext.Provider>	    

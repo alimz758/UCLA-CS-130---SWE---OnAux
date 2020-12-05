@@ -18,10 +18,11 @@ function CreateSessionPage({ navigation }): JSX.Element {
 	  'Content-Type': 'application/json',
 	},
 	body: JSON.stringify({
-	  sessionName: 'joesesh',
+	  sessionName: sesId,
 	}),
       })
-      .then((resp) => console.log(resp));
+      .then((resp) => resp.json())
+      .then((json) => console.log(json));
     } catch (err) {
       console.error(err);
     }

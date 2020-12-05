@@ -13,8 +13,8 @@ function HybridSessionPage({ navigation }): JSX.Element {
   
   return (
     <Stack.Navigator>
-      <Stack.Screen name='SessionList' component={SessionListPage} />
-      <Stack.Screen name='GuestPage' component={GuestPage} />
+      <Stack.Screen name='Sessions' component={SessionListPage} />
+      <Stack.Screen name='Guest' component={GuestPage} />
     </Stack.Navigator>
   );
 

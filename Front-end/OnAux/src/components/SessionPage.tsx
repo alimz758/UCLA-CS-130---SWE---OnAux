@@ -49,10 +49,6 @@ function SessionPage(): JSX.Element {
         const session = await SpotifyAuth.authorize(spotifyConfig);
         await SpotifyRemote.connect(session.accessToken);
 	setTok(session.accessToken);
-	console.log("made it");
-	console.log(tok);
-	console.log(session.accessToken);
-	console.log("checkpoint");
 	let uri = await getSongFromText(session.accessToken);
 	await SpotifyRemote.queueUri(uri);
       } else {
