@@ -10,10 +10,10 @@ Models:
 1. [User](#user)
 2. [Session](#session)
 
+Testing:
 
-Testing via Postman:
-
-[Testing](#testing)
+[Testing with Postman](#testing)
+[Unit Testing with Mocha Script](#mocha)
 
 ---
 
@@ -624,3 +624,12 @@ Backend-Response:
 7. You really liked a song that the DJ played, so [Add-Song](#add-song) to your likes list.
 8. You check your updated user likes with [Get-Likes](#get-likes).
 9. When you are done, you decide to [Logout](#logout).  Try running another API request [Get-Likes](#get-likes) to show we logged out!
+
+
+---
+### Mocha
+---
+1. Start the local backend server:
+ - Open a teminal session to UCLA-CS-130---SWE---OnAux/ root and run `mongod`
+ - Open another teminal session to UCLA-CS-130---SWE---OnAux/Back-end/ directory and run `npm run dev`
+2. Open a final teminal session to UCLA-CS-130---SWE---OnAux/Back-end/ directory and run `npm run test` to execute the mocha script.
