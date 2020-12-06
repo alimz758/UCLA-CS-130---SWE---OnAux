@@ -1,8 +1,5 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
-const app = require('../src/app');
-const user = require('../src/user/index');
-const session = require('../src/session/index')
 const request = require("supertest")("http://localhost:8000");
 const {v4: uuidv4} = require("uuid");
 let token = null;
@@ -14,7 +11,6 @@ let _lastName = "u666s";
 let _email = `${uuidv4()}`;
 let _password = `12d34d`;
 let _sessionName = 'Jakes Session';
-let songuri =  "849846161";
 
 describe("GET /session/create", function () {
     it("Should say Hello", async function(){
@@ -35,7 +31,7 @@ describe("POST /user/signup", function () {
     console.log(response['text']);
     token = response['body']['token'];
     user_id = response['body']['user']['_id'];
-    //console.log(token);
+
     console.log(JSON.parse(response['text'])['user']['createdAt']);
     expect(response.status).to.eql(201); // make sure correct status, then check for correct information
     expect(JSON.parse(response['text'])['user']['username']).to.eql(_username);
@@ -58,12 +54,6 @@ describe("POST /session/create", function () {
     expect(JSON.parse(response['text'])['newSessionInfo']['sessionName']).to.eql(_sessionName);
 
     expect(response.status).to.eql(201);
-
-    //const attributes = response.body.data.attributes;
-    //expect(attributes).to.include.keys("kilometers", "miles", "nautical_miles");
-    //expect(attributes.kilometers).to.eql(8692.066508240026);
-    //expect(attributes.miles).to.eql(5397.239853492001);
-    //expect(attributes.nautical_miles).to.eql(4690.070954910584);
   });
 });
 
@@ -85,12 +75,6 @@ describe("POST /session/session-id=sessionID/set-current-song", function () {
     expect(JSON.parse(response['text'])['currentSongInfo']['album']).to.eql( "Single");
     expect(JSON.parse(response['text'])['sessionName']).to.eql(_sessionName);
     expect(response.status).to.eql(200);
-
-    //const attributes = response.body.data.attributes;
-    //expect(attributes).to.include.keys("kilometers", "miles", "nautical_miles");
-    //expect(attributes.kilometers).to.eql(8692.066508240026);
-    //expect(attributes.miles).to.eql(5397.239853492001);
-    //expect(attributes.nautical_miles).to.eql(4690.070954910584);
   });
 });
 describe("POST /user/add-song", function () {
@@ -130,12 +114,6 @@ describe("First try: POST /session/session-id=sessionID/history/add-song", funct
     expect(JSON.parse(response['text'])[0]['artist']).to.eql( "Ghostland Observatory");
     expect(JSON.parse(response['text'])[0]['album']).to.eql( "Single");
     expect(response.status).to.eql(200);
-
-    //const attributes = response.body.data.attributes;
-    //expect(attributes).to.include.keys("kilometers", "miles", "nautical_miles");
-    //expect(attributes.kilometers).to.eql(8692.066508240026);
-    //expect(attributes.miles).to.eql(5397.239853492001);
-    //expect(attributes.nautical_miles).to.eql(4690.070954910584);
   });
 });
 
@@ -256,7 +234,6 @@ describe("GET /user/likes", function () {
     expect(JSON.parse(response['text'])[0]['songName']).to.eql( "Bad & Boujee");
     expect(JSON.parse(response['text'])[0]['artist']).to.eql("Migos");
     expect(JSON.parse(response['text'])[0]['album']).to.eql("Single");
-    console.log(response.songuri);
   });
 });
 describe("POST /user/logout", function () {
