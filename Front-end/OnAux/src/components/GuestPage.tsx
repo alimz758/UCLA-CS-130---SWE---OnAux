@@ -28,7 +28,7 @@ const spotifyConfig: ApiConfig = {
 }
 
 
-const getSession = async (seshId, cookie, setHistory, setQueue, setId) => {
+const getSession = async (seshId, cookie, setHistory, setQueue, setId, setSong) => {
   return fetch('http://13.59.212.151:8000/session/session-id='+seshId, {
     method: 'GET',
     headers: {
@@ -37,7 +37,10 @@ const getSession = async (seshId, cookie, setHistory, setQueue, setId) => {
     },
   }).then((response) => response.json())
   .then((json) => {
+    console.log('octopus');
     console.log(json);
+    console.log('HISTORY: ' + json.history);
+    setSong(json.currentSongInfo);
     setHistory(json.history);
     setQueue(json.requestedSongObj);
     setId(json.sessionName);
@@ -83,44 +86,14 @@ const sendApiSongReq = async (song, seshId, cookie, setHistory, setQueue, setId)
     }),
   }).then((resp) => resp.json())
   .then((json) => {
-    setHistory(json.history);
+    console.log('SENDAPISONGREQ JSON: ' + json);
+    console.log('SENDAPISONGREQ HISTORY: ' + json.history);
+    console.log('SENDAPISONGREQ REQ: ' + json.requestedSongObj);
+    //setHistory(json.history);
     setQueue(json.requestedSongObj);
     setId(json.sessionName);
   })
   .catch((err) => console.error(err));
-}
-
-const getSongFromApi = async (tok, songr, setSong) => {
-    let song = await getSongFromText(tok, songr, setSong);
-    console.log('songfromapi ' + song);
-}
-
-const requestSong = async (tok, songr, seshId, cookie, setHistory, setQueue, setId, setSong) => {
-
-    console.log('SPOTIFY TOKEN: ' + tok);
-    console.log('SESHID: ' + seshId);
-
-    await getSongFromApi(tok, songr, setSong)
-    .then((song) => {
-    console.log('The song is: ' + song);
-    fetch('http://13.59.212.151:8000/session/session-id='+seshId+'/request-song', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + cookie,
-	'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        songInfo: song,
-	vote: '1',
-      }),
-    })}).then((resp) => console.log(resp))
-    .then((json) => {
-      console.log('Request Response: ' + json);
-      setHistory(json.history);
-      setQueue(json.requestedSongObj);
-      setId(json.sessionName);
-    })
-    .catch((err) => console.error(err));
 }
 
 const authorizeSpotify = async (setTok) => {
@@ -144,22 +117,50 @@ function GuestPage({ route, navigation }): JSX.Element {
 
   const Item = ({ song }) => (
     <View style={styles.itemdiv}>
-      <Text style={styles.votebtn}>{song.vote+' '}</Text>
+      <Text style={styles.votebtn}>{(typeof song.vote === 'undefined' ? ' ' : song.vote ) + ' '}</Text>
       <View style={styles.songArtist}>
         <View style={styles.item}>
-	  <Text style={styles.entry}>{song.songName}</Text>
-	  <Text style={styles.artist}>{song.artist}</Text>
+	  <Text style={styles.entry}>{typeof song.songName === 'undefined' ? ' ' : song.songName}</Text>
+	  <Text style={styles.artist}>{typeof song.artist === 'undefined' ? ' ' : song.artist}</Text>
 	</View>
       </View>
+      <Button
+        style={styles.votebtn}
+	title='+'
+	onPress={() => voteSong(song)}
+      />
     </View>
   );
 
+  const voteSong = async ( song ) => {
+    console.log('votesong!');
+    console.log(song);
+    return fetch('http://13.59.212.151:8000/session/session-id='+seshId+'/request-song', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + cookie,
+	'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        songInfo: song,
+	vote: '1',
+      }),
+    })
+    .then((resp) => {
+      return resp.json();
+    })
+    .then((json) => {
+      console.log(json);
+      setQueue(json.requestedSongObj);
+    })
+    .catch((err) => console.error(err));
+  }
 
   useEffect(() => {
     let mounted = true;
 
     const getSesh = async () => {
-      await getSession(seshId, cookie, setHistory, setQueue, setId);
+      await getSession(seshId, cookie, setHistory, setQueue, setId, setSong);
     }
 
     if(mounted){
@@ -193,6 +194,27 @@ function GuestPage({ route, navigation }): JSX.Element {
     },
   ];
 
+  const saveSong = () => {
+    return fetch('http://13.59.212.151:8000/user/add-song', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + cookie,
+	'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        songInfo: song,
+      })
+    })
+    .then((resp) => {
+      return resp.json();
+    })
+    .then((json) => {
+      console.log('savesong!');
+      console.log(json);
+    })
+    .catch((err) => console.error(err));
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.form}>
@@ -211,10 +233,21 @@ function GuestPage({ route, navigation }): JSX.Element {
 	    keyExtractor={(item, index) => item + index}
 	    renderItem={({ item }) => <Item song={item} />}
 	    renderSectionHeader={({ section: { title } }) => (
-	      <Text style={styles.heading}>{title}</Text>
+	      <Text style={styles.heading}>{typeof title === 'undefined' ? ' ' : title}</Text>
 	    )}
 	  />
 	</SafeAreaView>
+	<View style={styles.itemdiv}>
+          <View style={styles.songArtist}>
+	    <Text style={styles.entry}>{song === null ? ' ' : 'Now Playing'}</Text>
+            <Text style={styles.entry}>{song === null ? ' ' : song.songName}</Text>
+	    <Text style={styles.artist}>{song === null ? ' ' : song.artist}</Text>
+          </View>
+	  <Button
+	    title='like'
+	    onPress={saveSong}
+	  />
+	</View>
       </View>
     </View>
   );

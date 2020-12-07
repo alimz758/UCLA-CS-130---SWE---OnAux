@@ -27,117 +27,132 @@ const spotifyConfig: ApiConfig = {
   ],
 }
 
-const DATA = [
-  {
-    title: 'Queue',
-    data: ['Marvins Room', 'Pyramids', 'Dont Think Twice its Alright'],
-  },
-  {
-    title: 'History',
-    data: ['Lost', 'Cameras', 'Draco']
-  },
-];
+
+const getSession = async (seshId, cookie, setHistory, setQueue, setId, setSong) => {
+  return fetch('http://13.59.212.151:8000/session/session-id='+seshId, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + cookie,
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json())
+  .then((json) => {
+    console.log('octopus');
+    console.log(json);
+    console.log('HISTORY: ' + json.history);
+    setSong(json.currentSongInfo);
+    setHistory(json.history);
+    setQueue(json.requestedSongObj);
+    setId(json.sessionName);
+  }).catch((err) => console.error(err));
+}
+
+const getSongFromText = async (token, songr, seshId, cookie, setHistory, setQueue, setId) => {
+  console.log("mark4");
+  console.log(token);
+
+  await fetch('https://api.spotify.com/v1/search?q='+songr+'&type=track&market=US&limit=1', {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  }).then((resp) => resp.json())
+  .then((json) => json.tracks.items[0])
+  .then((track) => {
+    //console.log(track);
+    const song = {
+      songuri: track.uri,
+      songName: track.name,
+      artist: track.artists[0].name,
+      album: track.album.name,
+    };
+    console.log(song);
+    return song;
+  })
+  .then((song) => sendApiSongReq(song, seshId, cookie, setHistory, setQueue, setId))
+  .catch((error) => console.error(error));
+}
+
+const sendApiSongReq = async (song, seshId, cookie, setHistory, setQueue, setId) => {
+  await fetch('http://13.59.212.151:8000/session/session-id='+seshId+'/request-song', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + cookie,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      songInfo: song,
+      vote: '1',
+    }),
+  }).then((resp) => resp.json())
+  .then((json) => {
+    console.log('SENDAPISONGREQ JSON: ' + json);
+    console.log('SENDAPISONGREQ HISTORY: ' + json.history);
+    console.log('SENDAPISONGREQ REQ: ' + json.requestedSongObj);
+    //setHistory(json.history);
+    setQueue(json.requestedSongObj);
+    setId(json.sessionName);
+  })
+  .catch((err) => console.error(err));
+}
+
+const authorizeSpotify = async (setTok) => {
+  await SpotifyAuth.authorize(spotifyConfig)
+  .then((session) => { console.log('ACCESS TOK: ' + session.accessToken); setTok(session.accessToken); })
+  .catch((err) => console.error(err));
+}
 
 function GuestPage({ route, navigation }): JSX.Element {
   const [id, setId] = useState("");
   const [req, setReq] = useState("");
-  const [tok, setTok] = useState(null);
+  const [tok, setTok] = useState("");
   const [queue, setQueue] = useState([]);
   const [history, setHistory] = useState([]);
+  const [song, setSong] = useState(null);
   const { seshId } = route.params;
   const { cookie, updateCookie } = useContext(CookieContext);
 
   //console.log(seshId);
 
-  const getSession = async () => {
-    return fetch('http://13.59.212.151:8000/session/session-id='+seshId, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + cookie,
-	'Content-Type': 'application/json',
-      },
-    }).then((response) => response.json())
-    .then((json) => {
-      console.log(json);
-      setHistory(json.history);
-      setQueue(json.requestedSongObj);
-      setId(json.sessionName);
-    }).catch((err) => console.error(err));
-  }
-
-  const getSongFromText = async (token) => {
-    try {
-      let resp = await fetch('https://api.spotify.com/v1/search?q='+req+'&type=track&market=US&limit=1', {
-        method: 'GET',
-	headers: {
-	  Authorization: 'Bearer ' + token,
-	},
-      });
-      let json = await resp.json();
-      //console.log(json.tracks.items[0]);
-      let track = json.tracks.items[0];
-      const song = {
-        songuri: track.uri,
-	songName: track.name,
-	artist: track.artists[0].name,
-	album: track.album.name,
-      };
-      return song;
-    } catch(err) { console.error(err) }
-  }
-
-  const getSongFromApi = async () => {
-    try {
-      if(tok === null){
-        const session = await SpotifyAuth.authorize(spotifyConfig);
-	await SpotifyRemote.connect(session.accessToken);
-	setTok(session.accessToken);
-	//let uri = await getSongFromText(session.accessToken);
-	//await SpotifyRemote.queueUri(uri);
-	let song = await getSongFromText(session.accessToken);
-	return song;
-      } else {
-        
-        let song = await getSongFromText(tok);
-	return song;
-      }
-    } catch(err) { console.error(err) };
-  }
-
-  const requestSong = async () => {
-
-    const song = await getSongFromApi();
-    console.log(song);
-
-    return fetch('http://13.59.212.151:8000/session/session-id='+seshId+'/request-song', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + cookie,
-	'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        songInfo: song,
-	vote: '1',
-      }),
-    }).then((resp) => resp.json())
-    .then((json) => {
-      setHistory(json.history);
-      setQueue(json.requestedSongObj);
-      setId(json.sessionName);
-    })
-    .catch((err) => console.error(err));
-  }
 
   const Item = ({ song }) => (
-    <View style={styles.item}>
-      <Text style={styles.entry}>{song.songName}</Text>
-      <Text style={styles.artist}>{song.artist}</Text>
+    <View style={styles.itemdiv}>
+      <Text style={styles.votebtn}>{(typeof song.vote === 'undefined' ? ' ' : song.vote ) + ' '}</Text>
+      <View style={styles.songArtist}>
+        <View style={styles.item}>
+	  <Text style={styles.entry}>{typeof song.songName === 'undefined' ? ' ' : song.songName}</Text>
+	  <Text style={styles.artist}>{typeof song.artist === 'undefined' ? ' ' : song.artist}</Text>
+	</View>
+      </View>
     </View>
   );
 
   useEffect(() => {
-    getSession();
+    let mounted = true;
+
+    const getSesh = async () => {
+      await getSession(seshId, cookie, setHistory, setQueue, setId, setSong);
+    }
+
+    if(mounted){
+      getSesh();
+    }
+    return () => mounted = false;
   }, []);
+
+  useEffect(() => {
+
+    const authSpot = async () => {
+      await authorizeSpotify(setTok)
+      .then(() => SpotifyRemote.connect(tok));
+    }
+
+    if(tok == ""){
+      authSpot();
+    } else {
+      SpotifyRemote.connect(tok);
+    }
+  });
 
   const queueHis = [
     {
@@ -150,6 +165,10 @@ function GuestPage({ route, navigation }): JSX.Element {
     },
   ];
 
+  const saveSong = () => {
+
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.form}>
@@ -160,7 +179,7 @@ function GuestPage({ route, navigation }): JSX.Element {
 	/>
 	<Button
 	  title='Request'
-	  onPress={requestSong}
+	  onPress={() => getSongFromText(tok, req, seshId, cookie, setHistory, setQueue, setId)}
 	/>
 	<SafeAreaView style={styles.container}>
 	  <SectionList
@@ -168,10 +187,20 @@ function GuestPage({ route, navigation }): JSX.Element {
 	    keyExtractor={(item, index) => item + index}
 	    renderItem={({ item }) => <Item song={item} />}
 	    renderSectionHeader={({ section: { title } }) => (
-	      <Text style={styles.heading}>{title}</Text>
+	      <Text style={styles.heading}>{typeof title === 'undefined' ? ' ' : title}</Text>
 	    )}
 	  />
 	</SafeAreaView>
+	<View style={styles.itemdiv}>
+          <View style={styles.songArtist}>
+            <Text style={styles.entry}>{song === null ? ' ' : song.songName}</Text>
+	    <Text style={styles.artist}>{song === null ? ' ' : song.artist}</Text>
+          </View>
+	  <Button
+	    title='like'
+	    onPress={saveSong}
+	  />
+	</View>
       </View>
     </View>
   );
@@ -219,6 +248,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+  itemdiv: {
+    flexDirection: 'row',
+  },
+  songArtist: {
+    flexDirection: 'column',
+  },
+  votebtn: {
+    fontSize: 16,
+  }
 });
 
 export default GuestPage;

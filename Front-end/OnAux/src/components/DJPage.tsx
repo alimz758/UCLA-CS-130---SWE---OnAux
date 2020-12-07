@@ -41,7 +41,7 @@ function DJPage({ route, navigation }): JSX.Element {
 
   const Item = ({ song }) => (
     <View style={styles.itemdiv}>
-      <Text style={styles.votebtn}>{song.vote+' '}</Text>
+      <Text style={styles.entry}>{(typeof song.vote === 'undefined' ? ' ' : song.vote ) + ' '}</Text>
       <View style={styles.songArtist}>
         <View style={styles.item}>
 	  <Text style={styles.entry}>{song.songName}</Text>
@@ -54,6 +54,30 @@ function DJPage({ route, navigation }): JSX.Element {
   const authorizeSpotify = async () => {
     await SpotifyAuth.authorize(spotifyConfig)
     .then((session) => setTok(session.accessToken))
+    .catch((err) => console.error(err));
+  }
+
+  const getSession = async () => {
+    console.log('getSession was called');
+
+    return fetch('http://13.59.212.151:8000/session/session-id='+sesh.newSessionInfo._id, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + cookie,
+	'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      try {
+      	console.log('djpage getsession!');
+        console.log(json);
+        setQueue(json.requestedSongObj);
+      } catch (error) {
+        console.log('djpage error!');
+        console.error(error);
+      }
+    })
     .catch((err) => console.error(err));
   }
 
@@ -73,15 +97,20 @@ function DJPage({ route, navigation }): JSX.Element {
 	artist: track.artists[0].name,
 	album: track.album.name
       };
+      if(curp != null){
+        console.log('addHis Call');
+        addHistory(curp);
+      }
       setCurPlaying(song);
       setCurp(song);
+      getSession();
       queueSong(track.uri);
     })
     .catch((err) => console.error(err));
   }
 
-  const setCurPlaying = async (songinfo) => {
-    await fetch('https://13.59.212.151:8000/session/session-id='+sesh.newSessionInfo._id+'/set-current-song', {
+  const addHistory = async (songinfo) => {
+    return fetch('http://13.59.212.151:8000/session/session-id='+sesh.newSessionInfo._id+'/history/add-song', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + cookie,
@@ -92,6 +121,38 @@ function DJPage({ route, navigation }): JSX.Element {
       }),
     })
     .then((resp) => resp.json())
+    .then((json) => {
+      console.log('addHistory');
+      console.log(json);
+      if(json.length > 0){
+        try {
+	  setHistory(json);
+	} catch (error) {	
+	  console.error(error);
+	}
+      }
+    })
+    .catch((err) => console.error(err));
+  }
+
+  const setCurPlaying = async (songinfo) => {
+    console.log('SESH ID: ' + sesh.newSessionInfo._id);
+
+    return fetch('http://13.59.212.151:8000/session/session-id='+sesh.newSessionInfo._id+'/set-current-song', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + cookie,
+	'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        songInfo: songinfo,
+      }),
+    })
+    .then((resp) => {
+      console.log('setCurPlaying');
+      //console.log(resp);
+      return resp.json();
+    })
     .then((json) => {
       console.log(json);
     })
@@ -113,7 +174,13 @@ function DJPage({ route, navigation }): JSX.Element {
     } else {  
       SpotifyRemote.connect(tok);
     }
+
+    
   });
+
+  useEffect(() => {
+    let timer = setInterval(() => getSession(), 1000);
+  }, []);
 
   const queueHis = [
     {
@@ -139,7 +206,7 @@ function DJPage({ route, navigation }): JSX.Element {
 	  onChangeText={text => setReq(text)}
 	/>
 	<Button
-	  title='Request'
+	  title='Play'
 	  onPress={getSongFromText}
 	/>
 	<SafeAreaView style={styles.container}>

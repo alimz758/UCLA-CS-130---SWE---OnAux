@@ -11,6 +11,7 @@ import SessionListPage from './src/components/SessionListPage';
 import CreateSessionPage from './src/components/CreateSessionPage';
 import HybridSessionPage from './src/components/HybridSessionPage';
 import HybridDJPage from './src/components/HybridDJPage';
+import LikesPage from './src/components/LikesPage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -68,6 +69,11 @@ const App: () => ReactNode = () => {
 	    <Tab.Screen
 	      name='Host'
 	      component={HybridDJPage}
+	    />
+
+	    <Tab.Screen
+	      name='Likes'
+	      component={LikesPage}
 	    />
 
 	  </Tab.Navigator>
