@@ -22,10 +22,31 @@ function LoginPage({ navigation }): JSX.Element {
       },
       body: JSON.stringify({
         username: uid,
-	email: 'qwwlkljjfd@gmail.com',
+	email: 'ladidadida@gmail.com',
 	password: pw,
-	firstName: 'joeds',
-	lastName: 'cleggds',
+	firstName: 'john',
+	lastName: 'doe',
+      }),
+    }).then((response) => response.json())
+    .then((json) => {
+      updateCookie(json.token);
+      //updateUser(uid);
+      console.log(json.token);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+  const loginAction = () => {
+    return fetch('http://13.59.212.151:8000/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: uid,
+	password: pw,
       }),
     }).then((response) => response.json())
     .then((json) => {
@@ -52,7 +73,7 @@ function LoginPage({ navigation }): JSX.Element {
 	  />
           <Button
 	    title='Login'
-	    onPress={signUpAction}
+	    onPress={loginAction}
 	  />
         </View>
       </View>

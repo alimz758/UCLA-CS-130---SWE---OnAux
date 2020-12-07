@@ -75,6 +75,10 @@ function LoginPage({ navigation }): JSX.Element {
 	    title='Login'
 	    onPress={loginAction}
 	  />
+	  <Button
+	    title='Sign Up'
+	    onPress={signUpAction}
+	  />
         </View>
       </View>
 //      )}

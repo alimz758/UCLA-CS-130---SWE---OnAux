@@ -21,7 +21,13 @@ function CreateSessionPage({ navigation }): JSX.Element {
 	  sessionName: sesId,
 	}),
       })
-      .then((resp) => console.log(resp));
+      .then((resp) => resp.json())
+      .then((json) => {
+        console.log(json);
+	navigation.navigate('DJ Panel', {
+	  sesh: json,
+	});
+      });
     } catch (err) {
       console.error(err);
     }

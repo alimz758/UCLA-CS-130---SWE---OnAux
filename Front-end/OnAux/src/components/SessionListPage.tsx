@@ -6,6 +6,7 @@ import { CookieContext } from '../../cookie-context';
 function SessionListPage({ navigation }): JSX.Element {
   const { cookie, updateCookie } = useContext(CookieContext);
   const [ sessions, updateSessions ] = useState([])
+  const [ seshId, setSeshId] = useState('')
 
   const fetchSessions = () => {
     console.log(cookie);
@@ -17,7 +18,7 @@ function SessionListPage({ navigation }): JSX.Element {
       },
     }).then((response) => response.json())
     .then((json) => {
-      //console.log(json[0]);
+      console.log(json);
       updateSessions(json);
     }).catch((error) => console.error(error));
   }
@@ -36,7 +37,7 @@ function SessionListPage({ navigation }): JSX.Element {
     <View style={styles.item}>
       <Item
         title={item.sessionName}
-	onPress={() => selectSession()}
+	onPress={() => selectSession(item._id)}
       />
     </View>
   );
@@ -45,8 +46,11 @@ function SessionListPage({ navigation }): JSX.Element {
       <Text>help</Text>
   );
 
-  const selectSession = () => {
-    navigation.navigate('GuestPage');
+  selectSession = (id) => {
+    console.log(id);
+    navigation.navigate('Guest', {
+      seshId: id,
+    });
   }
 
   return (
